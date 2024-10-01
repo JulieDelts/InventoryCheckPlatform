@@ -6,4 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\InventoryCheckPlatform.BLL\InventoryCheckPlatform.BLL.csproj" />
+    <ProjectReference Include="..\InventoryCheckPlatform.Core\InventoryCheckPlatform.Core.csproj" />
+  </ItemGroup>
+
 </Project>
