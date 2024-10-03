@@ -10,11 +10,14 @@
 				Опции
 			</DropdownToggleButton>
 			<DropdownMenu>
-				<DropdownItem To="#" Type="DropdownItemType.Link">Редактировать</DropdownItem>
-				<DropdownItem To="#" Type="DropdownItemType.Button">Удалить</DropdownItem>
+				<Button Type="ButtonType.Button" @onclick="ShowForm" style="font-size:10px; font-family: Verdana;">Редактировать</Button>
+				<Button Type="ButtonType.Button" style="font-size:10px; font-family: Verdana;">Удалить</Button>
 			</DropdownMenu>
 		</Dropdown>
 	</div>
+
+	<Modal @ref="modal" UseStaticBackdrop="false" CloseOnEscape="true"/>
+
 </div>
 
 
@@ -22,4 +25,14 @@
 	[Parameter]
 	[EditorRequired]
 	public BasePoductOutputModel Product { get; set; }
+
+	private Modal modal = new();
+
+	private async Task ShowForm()
+	{
+		ExtendedBaseProductInputModel productInputModel = new() { Id = Product.Id, Category = Product.Category, Name = Product.Name };
+		var parameters = new Dictionary<string, object>();
+		parameters.Add("ExtendedBaseProduct", productInputModel);
+		await modal.ShowAsync<BaseProductModificationForm>(title: "Редактирование продукта", parameters: parameters);
+	}
 }
