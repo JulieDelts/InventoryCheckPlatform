@@ -1,0 +1,25 @@
+﻿@rendermode RenderMode.InteractiveServer
+<div class="card">
+	<img src="667f354d-06ee-42ed-b70b-8a749a3e2969.jpg" class="card-img-top" alt="Пицца">
+	<div class="card-body">
+		<h5 class="card-title">@Product.Name</h5>
+		<p class=" card-text">Id: @Product.Id</p>
+		<p class="card-text">Категория: @Product.Category </p>
+		<Dropdown Direction="DropdownDirection.DropdownCentered">
+			<DropdownToggleButton style=" width: 75px; height: 20px; font-size: 8px; font-weight: bold; font-family: Verdana; border: solid #d6b6fc; padding: 2px 1px 1px 1px; margin: 5px 5px 0 0; background: #f5f5f5">
+				Опции
+			</DropdownToggleButton>
+			<DropdownMenu>
+				<DropdownItem To="#" Type="DropdownItemType.Link">Редактировать</DropdownItem>
+				<DropdownItem To="#" Type="DropdownItemType.Button">Удалить</DropdownItem>
+			</DropdownMenu>
+		</Dropdown>
+	</div>
+</div>
+
+
+@code {
+	[Parameter]
+	[EditorRequired]
+	public BasePoductOutputModel Product { get; set; }
+}

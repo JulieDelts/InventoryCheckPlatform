@@ -1,0 +1,25 @@
+﻿.card {
+    width: 175px;
+    height: 200px;
+    margin: 5px;
+    border: solid;
+    border-color: #d6b6fc;
+    background-image: linear-gradient(to left bottom, #fdfdfd, #f5f3fe, #eee8ff, #e8ddff, #e3d2ff);
+    font-family: Verdana;
+}
+
+.card-img-top {
+    width: 170px;
+    height: 100px;
+}
+
+.card-title {
+    font-size: 12px;
+    font-weight: bold;
+    margin: 3px 3px 0 0;
+}
+
+.card-text {
+    font-size: 8px;
+    margin: 3px 3px 0 0;
+}
