@@ -1,9 +1,7 @@
 ﻿@page "/product-menu-page"
 @rendermode RenderMode.InteractiveServer
 
-<div class="container">
-    <a href="#link" class="btn" role="button">Добавить продукт</a>
-</div>
+ <BaseProductForm />
 
 @if (_products.Count > 0)
 {
