@@ -1,0 +1,34 @@
+﻿@rendermode RenderMode.InteractiveServer
+
+<Card Style="width: 18rem;">
+    <CardBody>
+        <CardTitle>@User.Name</CardTitle>
+        <CardText>
+            ID: @User.Id <br />
+            Role: @User.UserRole <br />
+            Restaurant ID: @User.RestaurantId
+        </CardText>
+        <Button Color="ButtonColor.Primary" Type="ButtonType.Button" @onclick="ShowProductComponent">Открыть профиль</Button>
+    </CardBody>
+</Card>
+
+<Modal @ref="modal" />
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public ShortUserOutputModel User { get; set; }
+
+    private Modal modal;
+    
+    private async Task ShowProductComponent()
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            { "Id", User.Id }
+        };
+        await modal.ShowAsync<FullUserCard>(title: "Информация о пользователе", parameters: parameters);
+    }
+
+   
+}
