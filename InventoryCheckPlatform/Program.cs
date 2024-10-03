@@ -12,7 +12,9 @@ namespace InventoryCheckPlatform
 			builder.Services.AddRazorComponents()
 				.AddInteractiveServerComponents();
 
-			var app = builder.Build();
+            builder.Services.AddBlazorBootstrap();
+
+            var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
 			if (!app.Environment.IsDevelopment())

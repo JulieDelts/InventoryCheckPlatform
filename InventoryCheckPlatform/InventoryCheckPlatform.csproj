@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazor.Bootstrap" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\InventoryCheckPlatform.BLL\InventoryCheckPlatform.BLL.csproj" />
     <ProjectReference Include="..\InventoryCheckPlatform.Core\InventoryCheckPlatform.Core.csproj" />
   </ItemGroup>

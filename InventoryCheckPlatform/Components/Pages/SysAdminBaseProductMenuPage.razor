@@ -1,0 +1,45 @@
+﻿@page "/product-menu-page"
+
+<div class="container">
+    <a href="#link" class="btn" role="button">Добавить продукт</a>
+</div>
+
+@if (_products.Count > 0)
+{
+	<div class="card-holder">
+		@foreach (var p in _products)
+		{
+		    <BaseProductCard Product="@p" />
+		}
+	</div>
+}
+else
+{
+	<p>Продуктов нет.</p>
+}
+
+<Pagination ActivePageNumber="1"
+            TotalPages="15"
+            DisplayPages="5"
+            Size="PaginationSize.Small"
+            Alignment="Alignment.Center"
+            FirstLinkIcon="IconName.ChevronDoubleLeft"
+            PreviousLinkIcon="IconName.ChevronLeft"
+            NextLinkIcon="IconName.ChevronRight"
+            LastLinkIcon="IconName.ChevronDoubleRight" Style="margin: 10px;" />
+
+@code
+{
+    private List<BasePoductOutputModel> _products;
+
+    private SysAdminProductManager _manager;
+
+    public SysAdminBaseProductMenuPage()
+    {
+        _manager = new();
+        _products = _manager.GetAllBaseProducts();
+    }
+
+    private void ModifyProduct()
+    { }
+}
