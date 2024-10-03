@@ -4,7 +4,13 @@ namespace InventoryCheckPlatform.BLL
 {
     public class SysAdminUserManager
     {
-        //private List<ShortUserOutputModel> _users;
+        private List<ShortUserOutputModel> _users;
+
+        public SysAdminUserManager()
+        {
+            // Инициализация списка пользователей
+            _users = GetAllUsersShortInfo();
+        }
 
         public List<ShortUserOutputModel> GetAllUsersShortInfo()
         {
@@ -60,33 +66,72 @@ namespace InventoryCheckPlatform.BLL
 
         public FullUserOutputModel GetUserById(int id)
         {
-            if (id % 2 == 0)
+            var userList = new List<FullUserOutputModel>
             {
-                return new FullUserOutputModel()
+
+             new FullUserOutputModel()
                 {
-                    Id = id,
-                    Name = "Pavel Gubin ",
-                    Mail = "kakoitoTam@mail.ru",
-                    Login = "pgubin",
-                    Password = "666",
-                    UserRole = "Admin",
-                    RestaurantId = 1
-                };
-            }
-            else
-            {
-                return new FullUserOutputModel()
+                Id = 1,
+                Name = "Pavel Gubin ",
+                Mail = "kakoitoTam@mail.ru",
+                Login = "pgubin",
+                Password = "666",
+                UserRole = "Admin",
+                RestaurantId = 1
+                },
+
+
+              new FullUserOutputModel()
                 {
-                    Id = id,
+                    Id = 2,
                     Name = "Sergey Trofimov",
                     Mail = "gavgav@mail.ru",
                     Login = "strofimov",
                     Password = "ggg",
                     UserRole = "Admin",
                     RestaurantId = 2
-                };
-            }
+                },
+
+
+              new FullUserOutputModel()
+              { Id = 3, Name = "Igor Petrov",
+                  Mail = "igor@mail.ru",
+                  Login = "ipetrov",
+                  Password = "123",
+                  UserRole = "Waiter",
+                 RestaurantId = 3
+              },
+
+                new FullUserOutputModel()
+                { Id = 4, Name = "Irina Ivanova",
+                    Mail = "irina@mail.ru",
+                    Login = "iivanova",
+                    Password = "pass",
+                    UserRole = "Waiter",
+                    RestaurantId = 1
+                },
+                new FullUserOutputModel()
+                { Id = 5, Name = "Olga Sidorova",
+                    Mail = "olga@mail.ru",
+                    Login = "osidorova",
+                    Password = "password",
+                    UserRole = "Waiter",
+                    RestaurantId = 1
+                },
+                new FullUserOutputModel()
+                { Id = 6, Name = "Oleg Smirnov",
+                    Mail = "oleg@mail.ru",
+                    Login = "osmnov",
+                    Password = "abc",
+                    UserRole = "Logist",
+                    RestaurantId = 0
+                }
+            };
+            return userList.FirstOrDefault(user => user.Id == id);
         }
+
+
+
 
         //TODO
         public void UpdateUser(FullUserOutputModel updatedUser)
