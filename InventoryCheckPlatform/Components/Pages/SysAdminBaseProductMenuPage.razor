@@ -1,4 +1,5 @@
 ﻿@page "/product-menu-page"
+@rendermode RenderMode.InteractiveServer
 
 <div class="container">
     <a href="#link" class="btn" role="button">Добавить продукт</a>
@@ -7,9 +8,9 @@
 @if (_products.Count > 0)
 {
 	<div class="card-holder">
-		@foreach (var p in _products)
+		@for (int i = _paginationStart; i < _paginationEnd; i++)
 		{
-		    <BaseProductCard Product="@p" />
+			<BaseProductCard Product="@_products[i]" />
 		}
 	</div>
 }
@@ -18,15 +19,17 @@ else
 	<p>Продуктов нет.</p>
 }
 
-<Pagination ActivePageNumber="1"
-            TotalPages="15"
-            DisplayPages="5"
+<Pagination ActivePageNumber="@_currentPageNumber"
+            TotalPages="@_numberOfPages"
+            DisplayPages="@_numberOfPagesToDisplay"
             Size="PaginationSize.Small"
             Alignment="Alignment.Center"
             FirstLinkIcon="IconName.ChevronDoubleLeft"
             PreviousLinkIcon="IconName.ChevronLeft"
             NextLinkIcon="IconName.ChevronRight"
-            LastLinkIcon="IconName.ChevronDoubleRight" Style="margin: 10px;" />
+            LastLinkIcon="IconName.ChevronDoubleRight"
+            PageChanged="OnPageChangedAsync"
+            Style="margin: 10px;"/>
 
 @code
 {
@@ -34,10 +37,78 @@ else
 
     private SysAdminProductManager _manager;
 
+    private int _currentPageNumber;
+
+    private int _numberOfPages;
+
+    private int _numberOfPagesToDisplay;
+
+    private int _numberOfItemsPerPage;
+
+    private int _paginationStart;
+
+    private int _paginationEnd;
+
     public SysAdminBaseProductMenuPage()
     {
         _manager = new();
         _products = _manager.GetAllBaseProducts();
+        _numberOfItemsPerPage = 6;
+        _numberOfPages = CalculateNumberOfPages();
+        _numberOfPagesToDisplay = CalculateNumberOfPagesToDisplay();
+        _currentPageNumber = 1;
+
+        if (_products.Count < _numberOfItemsPerPage)
+        {
+            _paginationStart = 0;
+            _paginationEnd = _products.Count - 1;
+        }
+        else
+        {
+
+            _paginationStart = 0;
+            _paginationEnd = _numberOfItemsPerPage;
+        }
+    }
+
+    private int CalculateNumberOfPages()
+    {
+        int numberOfPages = 0;
+
+        if (_products.Count == 0 || _products.Count == 1)
+        {
+            numberOfPages = 1;
+        }
+        else
+        {
+            numberOfPages = (int)Math.Ceiling((double)_products.Count / _numberOfItemsPerPage);
+        }
+
+        return numberOfPages;
+    }
+
+    private int CalculateNumberOfPagesToDisplay()
+    {
+        int numberOfPagesToDisplay = 0;
+
+        if (_numberOfPages < _numberOfItemsPerPage)
+        {
+            numberOfPagesToDisplay = _numberOfItemsPerPage;
+        }
+        else
+        {
+            numberOfPagesToDisplay = (int)Math.Ceiling((_numberOfPages * 0.4));
+        }
+
+        return numberOfPagesToDisplay;
+    }
+
+    private async Task OnPageChangedAsync(int newPageNumber)
+    {
+        _paginationStart = (newPageNumber - 1) * _numberOfItemsPerPage;
+        _paginationEnd = Math.Min(_paginationStart + _numberOfItemsPerPage, _products.Count);
+
+        await Task.Run(() => { _currentPageNumber = newPageNumber; });
     }
 
     private void ModifyProduct()

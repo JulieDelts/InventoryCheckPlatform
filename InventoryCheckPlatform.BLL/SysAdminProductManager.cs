@@ -47,6 +47,30 @@ namespace InventoryCheckPlatform.BLL
                     Name="хлебушке",
                     Category = "мучное"
                 },
+                new BasePoductOutputModel()
+                {
+                    Id=7,
+                    Name="ананасик",
+                    Category = "фрукт"
+                },
+                new BasePoductOutputModel()
+                {
+                    Id=8,
+                    Name="лосось",
+                    Category = "рыбное"
+                },
+                new BasePoductOutputModel()
+                {
+                    Id=9,
+                    Name="говядина",
+                    Category = "мясное"
+                },
+                new BasePoductOutputModel()
+                {
+                    Id=10,
+                    Name="джин",
+                    Category = "алкоголь"
+                }
             };
         }
 
