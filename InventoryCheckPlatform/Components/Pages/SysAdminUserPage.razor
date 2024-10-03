@@ -1,0 +1,29 @@
+﻿@page "/user-list-page"
+@rendermode RenderMode.InteractiveServer
+
+@if (_users.Count > 0)
+{
+    <div style="display:flex; justify-content: flex-start; flex-wrap:wrap;">
+   @foreach (var p in _users)
+    {
+        <ShortUserCard User="@p"/>
+    }
+    </div>
+}
+else
+{
+    <p>Пользователей нет</p>
+}
+
+@code {
+    private List<ShortUserOutputModel> _users;
+
+    private SysAdminUserManager _manager;
+
+    public SysAdminUserPage()
+    {
+        _manager = new();
+        _users = _manager.GetAllUsersShortInfo();
+    }
+
+}
