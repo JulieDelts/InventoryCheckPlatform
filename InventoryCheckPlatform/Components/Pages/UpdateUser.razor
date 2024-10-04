@@ -1,0 +1,68 @@
+﻿@page "/edit-user/{userId:int}"
+@inject NavigationManager NavigationManager
+@rendermode RenderMode.InteractiveServer
+
+<h3>изменить пользователя</h3>
+<EditForm Model="user" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="name">Имя:</label>
+        <InputText id="name" class="form-control" @bind-Value="user.Name" />
+        <ValidationMessage For="@(() => user.Name)" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <InputText id="email" class="form-control" @bind-Value="user.Mail" />
+        <ValidationMessage For="@(() => user.Mail)" />
+    </div>
+
+    <div class="form-group">
+        <label for="role">Роль:</label>
+        <InputText id="role" class="form-control" @bind-Value="user.UserRole" />
+        <ValidationMessage For="@(() => user.UserRole)" />
+    </div>
+
+    <div class="form-group">
+        <label for="restaurantId">ID ресторана:</label>
+        <InputNumber id="restaurantId" class="form-control" @bind-Value="user.RestaurantId" />
+        <ValidationMessage For="@(() => user.RestaurantId)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+    <button type="button" class="btn btn-secondary" @onclick="Cancel">Отменить</button>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public int userId { get; set; }
+
+    private FullUserOutputModel user = new FullUserOutputModel();
+
+    private SysAdminUserManager userManager = new SysAdminUserManager();
+
+    protected override void OnInitialized()
+    {
+       
+        user = userManager.GetUserById(userId);
+    }
+
+
+    private void HandleValidSubmit() //(обработка )
+    {
+        
+        NavigationManager.NavigateTo("/user-list-page");
+    }
+
+    //TO DO (не перенаправляет)
+    private void Cancel()
+    {
+     
+        NavigationManager.NavigateTo("/user-list-page");
+    }
+}
+
+}
