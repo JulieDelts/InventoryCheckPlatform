@@ -4,12 +4,13 @@ namespace InventoryCheckPlatform.BLL
 {
     public class SysAdminUserManager
     {
-        private List<ShortUserOutputModel> _users;
+        private List<FullUserOutputModel> _users;
+        private List <ShortUserOutputModel> _shortUsers;
 
         public SysAdminUserManager()
         {
             // Инициализация списка пользователей
-            _users = GetAllUsersShortInfo();
+            _shortUsers = GetAllUsersShortInfo();
         }
 
         public List<ShortUserOutputModel> GetAllUsersShortInfo()
@@ -135,7 +136,19 @@ namespace InventoryCheckPlatform.BLL
 
         //TODO
         public void UpdateUser(FullUserOutputModel updatedUser)
-        { }
+        {
+            var existingUser= _users.FirstOrDefault(u=> u.Id == updatedUser.Id);
+            if (existingUser != null)
+            {
+                existingUser.Name = updatedUser.Name;
+                existingUser.Mail = updatedUser.Mail;
+                existingUser.Login = updatedUser.Login;
+                existingUser.Password = updatedUser.Password; 
+                existingUser.UserRole = updatedUser.UserRole;
+                existingUser.RestaurantId = updatedUser.RestaurantId;
+
+            }
+        }
 
         //TODO
         public void AddNewUser()
