@@ -5,19 +5,20 @@
 		<h5 class="card-title">@Product.Name</h5>
 		<p class=" card-text">Id: @Product.Id</p>
 		<p class="card-text">Категория: @Product.Category </p>
-		<Dropdown Direction="DropdownDirection.DropdownCentered">
-			<DropdownToggleButton style=" width: 75px; height: 20px; font-size: 8px; font-weight: bold; font-family: Verdana; border: solid #d6b6fc; padding: 2px 1px 1px 1px; margin: 5px 5px 0 0; background: #f5f5f5">
+
+		<div class="dropdown">
+			<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 				Опции
-			</DropdownToggleButton>
-			<DropdownMenu>
-				<Button Type="ButtonType.Button" @onclick="ShowForm" style="font-size:10px; font-family: Verdana;">Редактировать</Button>
-				<Button Type="ButtonType.Button" style="font-size:10px; font-family: Verdana;">Удалить</Button>
-			</DropdownMenu>
-		</Dropdown>
+			</button>
+			<ul class="dropdown-menu">
+				<li><button class="dropdown-item" type="button" @onclick="ShowForm">Редактировать</button></li>
+				<li><button class="dropdown-item" type="button">Удалить</button></li>
+			</ul>
+		</div>
+
+	    <Modal @ref="modal" UseStaticBackdrop="false" CloseOnEscape="true"/>
+
 	</div>
-
-	<Modal @ref="modal" UseStaticBackdrop="false" CloseOnEscape="true"/>
-
 </div>
 
 

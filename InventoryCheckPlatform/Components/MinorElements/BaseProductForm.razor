@@ -1,40 +1,30 @@
 ﻿@rendermode RenderMode.InteractiveServer
 
-<Dropdown AutoClose="true">
-	<DropdownToggleButton style="display: block;
-        margin: 0 auto 15px;
-        width: 50%;
-        height: 50px;
-        font-size: 15px;
-        font-weight: bold;
-        padding: 10px 10px 10px 10px;
-        font-family:Verdana;
-        color:black;
-        border: solid #d6b6fc;
-        background: #f5f5f5">
-    Добавить продукт
-	</DropdownToggleButton>
-    <DropdownMenu Class="px-4 py-3" Style="width:480px;">
+<div class="dropdown-center">
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"  aria-expanded="false">
+        Добавить продукт
+    </button>
+    <ul class="dropdown-menu">
         <EditForm Model="@baseProduct" OnValidSubmit="@Submit">
             <DataAnnotationsValidator />
             <ValidationSummary />
-            <div class="mb-3">
+            <div class="mb-3 text-center">
                 <label class="form-label">Название:<span class="text-danger">*</span></label>
                 <InputText @bind-Value="baseProduct.Name" />
             </div>
-            <div class="mb-3">
+            <div class="mb-3 text-center">
                 <label class="form-label">Категория:</label>
                 <InputText @bind-Value="baseProduct.Category" />
             </div>
-             <div class="row">
-                    <div class="col-md-12 text-right">
-                        <Button Type="ButtonType.Button" Color="ButtonColor.Secondary" Class="float-end" @onclick="ResetForm">Сбросить</Button>
-                        <Button Type="ButtonType.Submit" Color="ButtonColor.Success" Class="float-end me-2">Подтвердить</Button>
-                    </div>
+            <div class="row">
+                <div class="col-md-14 text-center">
+                    <input class="btn btn-success" type="submit" value="Подтвердить">
+                    <input class="btn btn-light" type="reset" value="Сбросить">
+                </div>
             </div>
         </EditForm>
-    </DropdownMenu>
-</Dropdown>
+    </ul>
+</div>
 
 @code
 {
@@ -45,14 +35,9 @@
         baseProduct = new();
     }
 
-    public void Submit()
+    private void Submit()
     {
         Console.WriteLine($"Добавилось!");
-    }
-
-    private void ResetForm()
-    {
-        baseProduct = new();
     }
 }
 
