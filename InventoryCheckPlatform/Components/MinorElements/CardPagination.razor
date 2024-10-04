@@ -1,0 +1,102 @@
+﻿<Pagination ActivePageNumber="@_currentPageNumber"
+            TotalPages="@_numberOfPages"
+            DisplayPages="@_numberOfPagesToDisplay"
+            Size="PaginationSize.Small"
+            Alignment="Alignment.Center"
+            FirstLinkIcon="IconName.ChevronDoubleLeft"
+            PreviousLinkIcon="IconName.ChevronLeft"
+            NextLinkIcon="IconName.ChevronRight"
+            LastLinkIcon="IconName.ChevronDoubleRight"
+            PageChanged="OnPageChangedAsync"
+            Style="margin: 10px;"
+            @onclick="@OnClick" />
+
+@code {
+
+    [Parameter]
+    public int ListCount { get; set; }
+
+    [Parameter]
+    public int NumberOfItemsPerPage { get; set; }
+
+    [Parameter]
+    public int PaginationStart { get; set; }
+
+    [Parameter]
+    public int PaginationEnd { get; set; }
+
+    [Parameter]
+    public EventCallback<PaginationEventArgs> OnClickCallback { get; set; }
+
+    private int _currentPageNumber;
+
+    private int _numberOfPages;
+
+    private int _numberOfPagesToDisplay;
+
+
+    public CardPagination()
+    {
+        _currentPageNumber = 1;
+        NumberOfItemsPerPage = 6;
+    }
+
+    protected override void OnInitialized()
+    {
+        _numberOfPages = CalculateNumberOfPages();
+        _numberOfPagesToDisplay = CalculateNumberOfPagesToDisplay();
+    }
+
+    private int CalculateNumberOfPages()
+    {
+        int numberOfPages = 0;
+
+        if (ListCount == 0 || ListCount == 1)
+        {
+            numberOfPages = 1;
+        }
+        else
+        {
+            numberOfPages = (int)Math.Ceiling((double)ListCount / NumberOfItemsPerPage);
+        }
+
+        return numberOfPages;
+    }
+
+    private int CalculateNumberOfPagesToDisplay()
+    {
+        int numberOfPagesToDisplay = 0;
+
+        if (_numberOfPages < NumberOfItemsPerPage)
+        {
+            numberOfPagesToDisplay = NumberOfItemsPerPage;
+        }
+        else
+        {
+            numberOfPagesToDisplay = (int)Math.Ceiling((_numberOfPages * 0.4));
+        }
+
+        return numberOfPagesToDisplay;
+    }
+
+    private async Task OnPageChangedAsync(int newPageNumber)
+    {
+        PaginationStart = (newPageNumber - 1) * NumberOfItemsPerPage;
+        PaginationEnd = Math.Min(PaginationStart + NumberOfItemsPerPage, ListCount);
+
+        await Task.Run(() => { _currentPageNumber = newPageNumber; });
+    }
+
+    async Task OnClick()
+    {
+        PaginationEventArgs eventArgs = new() { PaginationStart = PaginationStart, PaginationEnd = PaginationEnd };
+        await OnClickCallback.InvokeAsync(eventArgs);
+    }
+
+    public class PaginationEventArgs()
+    {
+        public int PaginationStart { get; set; }
+
+        public int PaginationEnd { get; set; }
+    }
+}

@@ -1,4 +1,5 @@
 ﻿@page "/product-menu-page"
+@using static InventoryCheckPlatform.Components.MinorElements.CardPagination
 @rendermode RenderMode.InteractiveServer
 
  <BaseProductForm />
@@ -17,29 +18,17 @@ else
 	<p>Продуктов нет.</p>
 }
 
-<Pagination ActivePageNumber="@_currentPageNumber"
-            TotalPages="@_numberOfPages"
-            DisplayPages="@_numberOfPagesToDisplay"
-            Size="PaginationSize.Small"
-            Alignment="Alignment.Center"
-            FirstLinkIcon="IconName.ChevronDoubleLeft"
-            PreviousLinkIcon="IconName.ChevronLeft"
-            NextLinkIcon="IconName.ChevronRight"
-            LastLinkIcon="IconName.ChevronDoubleRight"
-            PageChanged="OnPageChangedAsync"
-            Style="margin: 10px;"/>
+<CardPagination ListCount="_products.Count"
+                PaginationStart="_paginationStart"
+                PaginationEnd="_paginationEnd"
+                NumberOfItemsPerPage="_numberOfItemsPerPage"
+                OnClickCallback="@SetPagination"></CardPagination>
 
 @code
 {
     private List<BasePoductOutputModel> _products;
 
     private SysAdminProductManager _manager;
-
-    private int _currentPageNumber;
-
-    private int _numberOfPages;
-
-    private int _numberOfPagesToDisplay;
 
     private int _numberOfItemsPerPage;
 
@@ -52,10 +41,7 @@ else
         _manager = new();
         _products = _manager.GetAllBaseProducts();
         _numberOfItemsPerPage = 6;
-        _numberOfPages = CalculateNumberOfPages();
-        _numberOfPagesToDisplay = CalculateNumberOfPagesToDisplay();
-        _currentPageNumber = 1;
-
+       
         if (_products.Count < _numberOfItemsPerPage)
         {
             _paginationStart = 0;
@@ -69,44 +55,10 @@ else
         }
     }
 
-    private int CalculateNumberOfPages()
+    public void SetPagination(PaginationEventArgs e)
     {
-        int numberOfPages = 0;
-
-        if (_products.Count == 0 || _products.Count == 1)
-        {
-            numberOfPages = 1;
-        }
-        else
-        {
-            numberOfPages = (int)Math.Ceiling((double)_products.Count / _numberOfItemsPerPage);
-        }
-
-        return numberOfPages;
-    }
-
-    private int CalculateNumberOfPagesToDisplay()
-    {
-        int numberOfPagesToDisplay = 0;
-
-        if (_numberOfPages < _numberOfItemsPerPage)
-        {
-            numberOfPagesToDisplay = _numberOfItemsPerPage;
-        }
-        else
-        {
-            numberOfPagesToDisplay = (int)Math.Ceiling((_numberOfPages * 0.4));
-        }
-
-        return numberOfPagesToDisplay;
-    }
-
-    private async Task OnPageChangedAsync(int newPageNumber)
-    {
-        _paginationStart = (newPageNumber - 1) * _numberOfItemsPerPage;
-        _paginationEnd = Math.Min(_paginationStart + _numberOfItemsPerPage, _products.Count);
-
-        await Task.Run(() => { _currentPageNumber = newPageNumber; });
+        _paginationStart = e.PaginationStart;
+        _paginationEnd = e.PaginationEnd;
     }
 
     private void ModifyProduct()
