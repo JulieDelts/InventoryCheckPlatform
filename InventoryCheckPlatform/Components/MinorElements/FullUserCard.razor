@@ -32,6 +32,8 @@
 <div class="row mt-3">
     <div class="col-md-12 text-end">
         <Button Color="ButtonColor.Primary" @onclick="EditUser">Изменить</Button>
+    </div>  <div class="col-md-12 text-end">
+        <Button Color="ButtonColor.Link" @onclick="DeleteUser">Удалить</Button>
     </div>
 </div>
 
@@ -61,5 +63,10 @@
     {
         NavigationManager.NavigateTo($"/edit-user/{_user?.Id}");
 
+    }
+
+    private void DeleteUser()
+    {
+        NavigationManager.NavigateTo($"/edit-user/{_user?.Id}");
     }
 }
