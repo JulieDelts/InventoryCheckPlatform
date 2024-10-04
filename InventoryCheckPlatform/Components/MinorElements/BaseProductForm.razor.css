@@ -16,3 +16,24 @@
 .validation-message {
     color: red;
 }
+
+.btn-secondary {
+    display: block;
+    margin: 0 auto 15px;
+    width: 50%;
+    height: 50px;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px 10px 10px 10px;
+    font-family: Verdana;
+    color: black;
+    border: solid #d6b6fc;
+    background: #f5f5f5;
+}
+
+.dropdown-menu {
+    margin: 0 auto 15px;
+    padding: 20px 20px 20px 20px;
+    width: 55%;
+    height: 200px;
+}
