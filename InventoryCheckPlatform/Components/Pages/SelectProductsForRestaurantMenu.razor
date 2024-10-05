@@ -1,0 +1,77 @@
+﻿@page "/select-products"
+@rendermode RenderMode.InteractiveServer
+
+<Grid TItem="SpecificProductOutputModel"
+      Class="table table-hover table-bordered table-striped"
+      DataProvider="EmployeesDataProvider"
+      AllowSorting="true"
+      AllowSelection="true"
+      SelectionMode="GridSelectionMode.Multiple"
+      SelectedItemsChanged="OnSelectedItemsChanged"
+      Responsive="true">
+
+    <GridColumns>
+        <GridColumn TItem="SpecificProductOutputModel" HeaderText="Id" PropertyName="Id" SortKeySelector="item => item.Id">
+            @context.Id
+        </GridColumn>
+        <GridColumn TItem="SpecificProductOutputModel" HeaderText="Название" PropertyName="Name" SortKeySelector="item => item.Name">
+            @context.Name
+        </GridColumn>
+        <GridColumn TItem="SpecificProductOutputModel" HeaderText="Категория" PropertyName="Category" SortKeySelector="item => item.Category">
+            @context.Category
+        </GridColumn>
+        <GridColumn TItem="SpecificProductOutputModel" HeaderText="Поставщик" PropertyName="Vendor" SortKeySelector="item => item.Vendor">
+            @context.Vendor
+        </GridColumn>
+        <GridColumn TItem="SpecificProductOutputModel" HeaderText="Цена за штуку" PropertyName="Price" SortKeySelector="item => item.Price">
+            @context.Price
+        </GridColumn>
+    </GridColumns>
+
+</Grid>
+
+<div class="mt-3">
+    Количество выбранных товаров: @selectedSpecificProducts.Count
+</div>
+
+<div class="mt-2">
+    Выбранные товары:
+    <ul>
+        @foreach (var emp in selectedSpecificProducts)
+        {
+            <li>@emp.Name</li>
+        }
+    </ul>
+</div>
+
+@code {
+    private List<SpecificProductOutputModel> _specificProducts = default!;
+
+    private HashSet<SpecificProductOutputModel> selectedSpecificProducts = new();
+
+    private RestaurantAdminProductManager _manager;
+
+    public SelectProductsForRestaurantMenu()
+    {
+        _manager = new();
+    }
+
+    private async Task<GridDataProviderResult<SpecificProductOutputModel>> EmployeesDataProvider(GridDataProviderRequest<SpecificProductOutputModel> request)
+    {
+        if (_specificProducts is null) // pull employees only one time for client-side filtering, sorting, and paging
+            _specificProducts = GetSpecificProducts();
+
+        return await Task.FromResult(request.ApplyTo(_specificProducts));
+    }
+
+    private List<SpecificProductOutputModel> GetSpecificProducts()
+    {
+        return _manager.GetAllSpecificProducts();
+    }
+
+    private Task OnSelectedItemsChanged(HashSet<SpecificProductOutputModel> specificProducts)
+    {
+        selectedSpecificProducts = specificProducts is not null && specificProducts.Any() ? specificProducts : new();
+        return Task.CompletedTask;
+    }
+}

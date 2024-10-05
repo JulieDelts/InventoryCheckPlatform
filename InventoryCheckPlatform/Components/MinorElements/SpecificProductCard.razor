@@ -1,0 +1,49 @@
+﻿@rendermode RenderMode.InteractiveServer
+<div class="card">
+	<img src="667f354d-06ee-42ed-b70b-8a749a3e2969.jpg" class="card-img-top" alt="Пицца">
+	<div class="card-body">
+		<h5 class="card-title">@SpecificProduct.Name</h5>
+		<p class=" card-text">Id: @SpecificProduct.Id</p>
+		<p class="card-text">Категория: @SpecificProduct.Category </p>
+		<p class="card-text">Поставщик: @SpecificProduct.Vendor </p>
+		<p class="card-text">Цена: @SpecificProduct.Price </p>
+		<p class="card-text">Количество: @SpecificProduct.Amount</p>
+		<div class="dropdown">
+			<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+				Опции
+			</button>
+			<ul class="dropdown-menu">
+				<li><button class="dropdown-item" type="button" @onclick="ShowForm">Редактировать</button></li>
+				<li><button class="dropdown-item" type="button">Удалить</button></li>
+			</ul>
+		</div>
+
+		<Modal @ref="modal" UseStaticBackdrop="false" CloseOnEscape="true" />
+
+	</div>
+</div>
+
+
+@code {
+	[Parameter]
+	[EditorRequired]
+	public SpecificProductOutputModelWithAmount SpecificProduct { get; set; }
+
+	private Modal modal = new();
+
+	private async Task ShowForm()
+	{
+		ExtendedSpecificProductInputModelWithAmount productInputModel = new()
+			{
+				Id = SpecificProduct.Id,
+				Category = SpecificProduct.Category,
+				Name = SpecificProduct.Name,
+				Vendor = SpecificProduct.Vendor,
+				Price = SpecificProduct.Price,
+				Amount = SpecificProduct.Amount
+			};
+		var parameters = new Dictionary<string, object>();
+		parameters.Add("ExtendedSpecificProductlWithAmount", productInputModel);
+		await modal.ShowAsync<SpecificProductAmountModificationForm>(title: "Редактирование количества продукта", parameters: parameters);
+	}
+}

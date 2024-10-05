@@ -1,0 +1,65 @@
+﻿@page "/rest-product-menu-page"
+@using static InventoryCheckPlatform.Components.MinorElements.CardPagination
+@rendermode RenderMode.InteractiveServer
+
+<div class="col-md-12 text-center">
+    <a href="/select-products">Добавить продукты для ресторана</a>
+</div>
+
+@if (_products.Count > 0)
+{
+	<div class="card-holder">
+		@for (int i = _paginationStart; i < _paginationEnd; i++)
+		{
+            <SpecificProductCard SpecificProduct="@_products[i]" />
+		}
+	</div>
+}
+else
+{
+	<p>Продуктов нет.</p>
+}
+
+<CardPagination ListCount="_products.Count"
+                PaginationStart="_paginationStart"
+                PaginationEnd="_paginationEnd"
+                NumberOfItemsPerPage="_numberOfItemsPerPage"
+                OnClickCallback="@SetPagination"></CardPagination>
+
+@code
+{
+    private List<SpecificProductOutputModelWithAmount> _products;
+
+    private RestaurantAdminProductManager _manager;
+
+    private int _numberOfItemsPerPage;
+
+    private int _paginationStart;
+
+    private int _paginationEnd;
+
+    public RestaurantAdminProductMenuPage()
+    {
+        _manager = new();
+        _products = _manager.GetAllSpecificProductsWithAmount();
+        _numberOfItemsPerPage = 6;
+       
+        if (_products.Count < _numberOfItemsPerPage)
+        {
+            _paginationStart = 0;
+            _paginationEnd = _products.Count - 1;
+        }
+        else
+        {
+
+            _paginationStart = 0;
+            _paginationEnd = _numberOfItemsPerPage;
+        }
+    }
+
+    public void SetPagination(PaginationEventArgs e)
+    {
+        _paginationStart = e.PaginationStart;
+        _paginationEnd = e.PaginationEnd;
+    }
+}
