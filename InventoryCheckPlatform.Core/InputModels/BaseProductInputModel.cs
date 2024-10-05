@@ -8,5 +8,7 @@ namespace InventoryCheckPlatform.Core.InputModels
         public string Name { get; set; }
 
 		public string Category { get; set; } = string.Empty;
+
+        public string FileName { get; set; }
     }
 }
