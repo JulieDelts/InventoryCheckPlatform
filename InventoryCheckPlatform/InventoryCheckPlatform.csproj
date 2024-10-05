@@ -15,4 +15,9 @@
     <ProjectReference Include="..\InventoryCheckPlatform.Core\InventoryCheckPlatform.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\BaseProductImages\" />
+    <Folder Include="wwwroot\Images\SpecificProductImages\" />
+  </ItemGroup>
+
 </Project>
