@@ -1,4 +1,6 @@
 ﻿@page "/user-list-page"
+@attribute [StreamRendering]
+@attribute [Authorize(Roles = "администратор")]
 @rendermode RenderMode.InteractiveServer
 
 @if (_users.Count > 0)
