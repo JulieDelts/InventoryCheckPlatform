@@ -1,0 +1,80 @@
+﻿@page "/login"
+
+@inject NavigationManager navManager
+
+<div class="col d-flex justify-content-center">
+	<div class="col-lg-4 pt-4 pb-4">
+		<EditForm Model="@Model" OnValidSubmit="Authenticate" FormName="LoginForm">
+			<DataAnnotationsValidator />
+			<div class="mb-3 text-center flex-column">
+				<img src="/login.png" alt="Login" width="200" height="200" />
+			</div>
+			<div class="mb-3 text-center flex-column">
+				<h3>Вход в систему</h3>
+			</div>
+			<div class="mb-3">
+				<label>Имя пользователя</label>
+				<InputText @bind-Value="Model.Login" class="form-control" />
+			</div>
+			<div class="mb-3">
+				<label>Пароль</label>
+				<InputText @bind-Value="Model.Password" type="password" class="form-control" />
+			</div>
+			<div class="mb-3 text-center">
+				<button type="submit" class="btn btn-success">Войти</button>
+			</div>
+			<div class="mb-3 text-center">
+				@_errorMessage
+			</div>
+		</EditForm>
+	</div>
+</div>
+
+
+@code
+{
+	[CascadingParameter]
+	public HttpContext HttpContext { get; set; }
+
+	[SupplyParameterFromForm]
+	public UserInputModel Model { get; set; } = new();
+
+	private string? _errorMessage;
+
+	private async Task Authenticate()
+	{
+		var user = users.Where(user => user.Login == Model.Login && user.Password == Model.Password).FirstOrDefault();
+
+		if (user is null)
+		{
+			_errorMessage = "Неверные имя пользователя или пароль.";
+			return;
+		}
+
+		var claims = new List<Claim>()
+		{
+			new Claim(ClaimTypes.Name, Model.Login),
+			new Claim(ClaimTypes.Role, "администратор")
+		};
+
+		var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+		var principal = new ClaimsPrincipal(identity);
+		await HttpContext.SignInAsync(principal);
+
+		navManager.NavigateTo("./");
+	}
+
+	List<UserInputModel> users = new()
+	{
+		new()
+		{
+			Login = "Ju",
+			Password = "qwe",
+		},
+		new()
+		{
+			Login = "Po",
+			Password = "asd"
+		}
+	};
+}

@@ -1,4 +1,6 @@
 ﻿@page "/edit-user/{userId:int}"
+@attribute [StreamRendering]
+@attribute [Authorize(Roles = "администратор")]
 @inject NavigationManager NavigationManager
 @rendermode RenderMode.InteractiveServer
 

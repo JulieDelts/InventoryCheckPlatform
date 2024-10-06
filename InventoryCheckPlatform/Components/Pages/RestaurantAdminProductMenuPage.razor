@@ -1,4 +1,6 @@
 ﻿@page "/rest-product-menu-page"
+@attribute [StreamRendering]
+@attribute [Authorize(Roles = "администратор")]
 @using static InventoryCheckPlatform.Components.MinorElements.CardPagination
 @rendermode RenderMode.InteractiveServer
 

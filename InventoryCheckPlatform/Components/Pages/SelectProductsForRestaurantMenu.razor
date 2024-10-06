@@ -1,4 +1,6 @@
 ﻿@page "/select-products"
+@attribute [StreamRendering]
+@attribute [Authorize(Roles = "администратор")]
 @rendermode RenderMode.InteractiveServer
 
 <Grid TItem="SpecificProductOutputModel"
@@ -58,7 +60,7 @@
 
     private async Task<GridDataProviderResult<SpecificProductOutputModel>> EmployeesDataProvider(GridDataProviderRequest<SpecificProductOutputModel> request)
     {
-        if (_specificProducts is null) // pull employees only one time for client-side filtering, sorting, and paging
+        if (_specificProducts is null)
             _specificProducts = GetSpecificProducts();
 
         return await Task.FromResult(request.ApplyTo(_specificProducts));
