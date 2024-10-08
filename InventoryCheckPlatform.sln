@@ -6,8 +6,13 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventoryCheckPlatform", "InventoryCheckPlatform\InventoryCheckPlatform.csproj", "{F6C585FC-EC2E-405E-8956-5EE964EBB4A3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventoryCheckPlatform.BLL", "InventoryCheckPlatform.BLL\InventoryCheckPlatform.BLL.csproj", "{2884BDBF-A74B-4D4A-A4D3-6557B1EE801F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E60269C9-E9D5-4BC4-B131-0429F6BC275D} = {E60269C9-E9D5-4BC4-B131-0429F6BC275D}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventoryCheckPlatform.Core", "InventoryCheckPlatform.Core\InventoryCheckPlatform.Core.csproj", "{A048B7C1-75DA-400F-A6DC-B7B79C9944C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryCheckPlatform.DAL", "InventoryCheckPlatform.DAL\InventoryCheckPlatform.DAL.csproj", "{E60269C9-E9D5-4BC4-B131-0429F6BC275D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +32,10 @@ Global
 		{A048B7C1-75DA-400F-A6DC-B7B79C9944C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A048B7C1-75DA-400F-A6DC-B7B79C9944C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A048B7C1-75DA-400F-A6DC-B7B79C9944C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E60269C9-E9D5-4BC4-B131-0429F6BC275D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E60269C9-E9D5-4BC4-B131-0429F6BC275D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E60269C9-E9D5-4BC4-B131-0429F6BC275D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E60269C9-E9D5-4BC4-B131-0429F6BC275D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
