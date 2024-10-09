@@ -7,6 +7,8 @@ namespace InventoryCheckPlatform.Core.DTOs
 
 		public string Name { get; set; }
 
+		public Restaurant Restaurant { get; set; }
+
 		List<Menu>? Menus { get; set; }
 
 		List<BaseProduct> BaseProducts { get; set; }
