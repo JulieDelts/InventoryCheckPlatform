@@ -1,16 +1,16 @@
 ﻿@rendermode RenderMode.InteractiveServer
 @inject IConfiguration config
 
-<EditForm Model="@ExtendedBaseProduct" OnValidSubmit="@Submit">
+<EditForm Model="@ExtendedRestaurant" OnValidSubmit="@Submit">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="mb-3 text-center">
-        <label class="form-label">Название:<span class="text-danger">*</span></label>
-        <InputText @bind-Value="ExtendedBaseProduct.Name" Placeholder="@ExtendedBaseProduct.Name" class="form-control" />
+        <label class="form-label">Адрес:<span class="text-danger">*</span></label>
+        <InputText @bind-Value="ExtendedRestaurant.Address" Placeholder="@ExtendedRestaurant.Address" class="form-control" />
     </div>
     <div class="mb-3 text-center">
-        <label class="form-label">Категория:</label>
-        <InputText @bind-Value="ExtendedBaseProduct.Category" Placeholder="@ExtendedBaseProduct.Category" class="form-control" />
+        <label class="form-label">Идентификатор администратора:<span class="text-danger">*</span></label>
+        <InputNumber @bind-Value="ExtendedRestaurant.AdminId" Placeholder="@ExtendedRestaurant.AdminId" class="form-control" />
     </div>
     <div class="mb-3 text-center">
         <label class="form-label">Изображение:</label>
@@ -28,14 +28,14 @@
 {
     [Parameter]
     [EditorRequired]
-    public ExtendedBaseProductInputModel ExtendedBaseProduct { get; set; }
+    public ExtendedRestaurantInputModel ExtendedRestaurant { get; set; }
 
     private IBrowserFile? file;
 
     private async Task Submit()
     {
         var relativePath = await CaptureFile();
-        ExtendedBaseProduct.FileName = relativePath;
+        ExtendedRestaurant.FileName = relativePath;
 
         Console.WriteLine($"Изменилось!");
     }
@@ -57,7 +57,7 @@
         Path.GetRandomFileName(),
         Path.GetExtension(file.Name));
 
-        string path = Path.Combine(config.GetValue<string>("FileStorage"), "BaseProductImages", newFileName);
+        string path = Path.Combine(config.GetValue<string>("FileStorage"), "RestaurantImages", newFileName);
 
         string relativePath = Path.Combine("BaseProductImages", newFileName);
 

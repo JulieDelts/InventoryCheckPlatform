@@ -1,0 +1,65 @@
+﻿@page "/restaurants-menu-page"
+@attribute [StreamRendering]
+@attribute [Authorize(Roles = "администратор")]
+@using static InventoryCheckPlatform.Components.MinorElements.CardPagination
+@rendermode RenderMode.InteractiveServer
+
+<RestaurantForm />
+
+@if (_restaurants.Count > 0)
+{
+    <div class="card-holder">
+        @for (int i = _paginationStart; i <= _paginationEnd; i++)
+        {
+            <RestaurantCard Restaurant="@_restaurants[i]" />
+        }
+    </div>
+}
+else
+{
+    <p>Ресторанов нет.</p>
+}
+
+<CardPagination ListCount="_restaurants.Count"
+                PaginationStart="_paginationStart"
+                PaginationEnd="_paginationEnd"
+                NumberOfItemsPerPage="_numberOfItemsPerPage"
+                OnClickCallback="@SetPagination"></CardPagination>
+
+@code
+{
+    private List<RestaurantOutputModel> _restaurants;
+
+    private SysAdminRestaurantManager _manager;
+
+    private int _numberOfItemsPerPage;
+
+    private int _paginationStart;
+
+    private int _paginationEnd;
+
+    public SysAdminRestaurantMenuPage()
+    {
+        _manager = new();
+        _restaurants = _manager.GetAllRestaurants();
+        _numberOfItemsPerPage = 6;
+
+        if (_restaurants.Count < _numberOfItemsPerPage)
+        {
+            _paginationStart = 0;
+            _paginationEnd = _restaurants.Count - 1;
+        }
+        else
+        {
+
+            _paginationStart = 0;
+            _paginationEnd = _numberOfItemsPerPage;
+        }
+    }
+
+    private void SetPagination(PaginationEventArgs e)
+    {
+        _paginationStart = e.PaginationStart;
+        _paginationEnd = e.PaginationEnd;
+    }
+}

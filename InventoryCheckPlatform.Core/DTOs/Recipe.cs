@@ -12,5 +12,7 @@ namespace InventoryCheckPlatform.Core.DTOs
 		List<BaseProduct> BaseProducts { get; set; }
 
 		public double Price { get; set; }
-	}
+
+        public string? FileName { get; set; }
+    }
 }

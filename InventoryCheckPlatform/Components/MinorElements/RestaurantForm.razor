@@ -1,0 +1,84 @@
+﻿@rendermode RenderMode.InteractiveServer
+@inject IConfiguration config
+
+<div class="dropdown-center">
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Добавить ресторан
+    </button>
+    <ul class="dropdown-menu">
+        <EditForm Model="@_restaurant" OnValidSubmit="@Submit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="mb-3 text-center">
+                <label class="form-label">Адрес:<span class="text-danger">*</span></label>
+                <InputText @bind-Value="_restaurant.Address" class="form-control" />
+            </div>
+            <div class="mb-3 text-center">
+                <label class="form-label">Идентификатор администратора:<span class="text-danger">*</span></label>
+                <InputNumber @bind-Value="_restaurant.AdminId" class="form-control" />
+            </div>
+            <div class="mb-3 text-center">
+                <label class="form-label">Изображение:</label>
+                <InputFile OnChange="@LoadFile" accept=".png,.jpg,.jpeg" class="form-control"></InputFile>
+            </div>
+            <div class="row">
+                <div class="col-md-14 text-center">
+                    <input class="btn btn-success" type="submit" value="Подтвердить">
+                    <input class="btn btn-light" type="reset" value="Сбросить" @onclick="Refresh">
+                </div>
+            </div>
+        </EditForm>
+    </ul>
+</div>
+
+@code
+{
+    private RestaurantInputModel _restaurant;
+
+    private IBrowserFile? file;
+
+    public RestaurantForm()
+    {
+        _restaurant = new();
+    }
+
+    private async Task Submit()
+    {
+        var relativePath = await CaptureFile();
+        _restaurant.FileName = relativePath;
+
+        Console.WriteLine($"Добавилось!");
+        Refresh();
+    }
+
+    private void LoadFile(InputFileChangeEventArgs e)
+    {
+        file = e.File;
+    }
+
+    private async Task<string> CaptureFile()
+    {
+        if (file is null)
+        {
+            return "";
+        }
+
+        string newFileName = Path.ChangeExtension(
+        Path.GetRandomFileName(),
+        Path.GetExtension(file.Name));
+
+        string path = Path.Combine(config.GetValue<string>("FileStorage"), "RestaurantImages", newFileName);
+
+        string relativePath = Path.Combine("BaseProductImages", newFileName);
+
+        await using FileStream fs = new(path, FileMode.Create);
+        await file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 30).CopyToAsync(fs);
+
+        return relativePath;
+    }
+
+    private void Refresh()
+    {
+        _restaurant = new();
+    }
+}
