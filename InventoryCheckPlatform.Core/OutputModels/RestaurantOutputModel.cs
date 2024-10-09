@@ -1,7 +1,9 @@
 ﻿
-namespace InventoryCheckPlatform.Core.DTOs
+using InventoryCheckPlatform.Core.DTOs;
+
+namespace InventoryCheckPlatform.Core.OutputModels
 {
-	public class Restaurant
+	public class RestaurantOutputModel
 	{
 		public int Id { get; set; }
 
@@ -14,7 +16,5 @@ namespace InventoryCheckPlatform.Core.DTOs
 		public List<Menu>? Menus { get; set; }
 
 		public List<SpecificProduct>? SpecificProducts { get; set; }
-
-		public string? FileName { get; set; }
 	}
 }
