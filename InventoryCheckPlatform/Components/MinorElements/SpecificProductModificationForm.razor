@@ -1,0 +1,81 @@
+﻿@rendermode RenderMode.InteractiveServer
+@inject IConfiguration config
+
+<EditForm Model="@ExtendedSpecificProduct" OnValidSubmit="@Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3 text-center">
+        <label class="form-label">Название:<span class="text-danger">*</span></label>
+        <InputText @bind-Value="ExtendedSpecificProduct.Name" Placeholder="@ExtendedSpecificProduct.Name" class="form-control" />
+    </div>
+    <div class="mb-3 text-center">
+        <label class="form-label">Идентификатор базового продукта:<span class="text-danger">*</span></label>
+        <InputNumber @bind-Value="ExtendedSpecificProduct.BaseProductId" Placeholder="@ExtendedSpecificProduct.BaseProductId" class="form-control" />
+    </div>
+    <div class="mb-3 text-center">
+        <label class="form-label">Категория:</label>
+        <InputText @bind-Value="ExtendedSpecificProduct.Category" Placeholder="@ExtendedSpecificProduct.Category" class="form-control" />
+    </div>
+    <div class="mb-3 text-center">
+        <label class="form-label">Поставщик:<span class="text-danger">*</span></label>
+        <InputText @bind-Value="ExtendedSpecificProduct.Vendor" Placeholder="@ExtendedSpecificProduct.Vendor" class="form-control" />
+    </div>
+    <div class="mb-3 text-center">
+        <label class="form-label">Цена:<span class="text-danger">*</span></label>
+        <InputNumber @bind-Value="ExtendedSpecificProduct.Price" Placeholder="@ExtendedSpecificProduct.Price" class="form-control" />
+    </div>
+    <div class="mb-3 text-center">
+        <label class="form-label">Изображение:</label>
+        <InputFile OnChange="@LoadFile" accept=".png,.jpg,.jpeg" class="form-control"></InputFile>
+    </div>
+    <div class="row">
+        <div class="col-md-14 text-center">
+            <input class="btn btn-success" type="submit" value="Подтвердить">
+            <input class="btn btn-light" type="reset" value="Сбросить">
+        </div>
+    </div>
+</EditForm>
+
+@code
+{
+    [Parameter]
+    [EditorRequired]
+    public ExtendedSpecificProductInputModel ExtendedSpecificProduct { get; set; }
+
+    private IBrowserFile? file;
+
+    private async Task Submit()
+    {
+        var relativePath = await CaptureFile();
+        ExtendedSpecificProduct.FileName = relativePath;
+
+        Console.WriteLine($"Изменилось!");
+    }
+
+    private void LoadFile(InputFileChangeEventArgs e)
+    {
+        file = e.File;
+    }
+
+
+    private async Task<string> CaptureFile()
+    {
+        if (file is null)
+        {
+            return "";
+        }
+
+        string newFileName = Path.ChangeExtension(
+        Path.GetRandomFileName(),
+        Path.GetExtension(file.Name));
+
+        string path = Path.Combine(config.GetValue<string>("FileStorage"), "SpecificProductImages", newFileName);
+
+        string relativePath = Path.Combine("BaseProductImages", newFileName);
+
+        await using FileStream fs = new(path, FileMode.Create);
+        await file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 30).CopyToAsync(fs);
+
+        return relativePath;
+    }
+}

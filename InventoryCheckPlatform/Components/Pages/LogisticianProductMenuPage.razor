@@ -1,25 +1,25 @@
-﻿@page "/rest-product-menu-page"
+﻿@page "/logistician-product-menu-page"
 @attribute [StreamRendering]
 @attribute [Authorize(Roles = "администратор")]
 @using static InventoryCheckPlatform.Components.MinorElements.CardPagination
 @rendermode RenderMode.InteractiveServer
 
-<div class="col-md-12 text-center">
-    <a href="/select-products">Добавить продукты для ресторана</a>
+<div class="col-md-12 text-right">
+    <a href="/add-specific-product">Добавить продукт</a>
 </div>
 
 @if (_products.Count > 0)
 {
-	<div class="card-holder">
-		@for (int i = _paginationStart; i < _paginationEnd; i++)
-		{
-            <RestaurantSpecificProductCard SpecificProduct="@_products[i]" />
-		}
-	</div>
+    <div class="card-holder">
+        @for (int i = _paginationStart; i < _paginationEnd; i++)
+        {
+            <LogisticianSpecificProductCard SpecificProduct="@_products[i]" />
+        }
+    </div>
 }
 else
 {
-	<p>Продуктов нет.</p>
+    <p>Продуктов нет.</p>
 }
 
 <CardPagination ListCount="_products.Count"
@@ -30,9 +30,9 @@ else
 
 @code
 {
-    private List<SpecificProductOutputModelWithAmount> _products;
+    private List<SpecificProductOutputModel> _products;
 
-    private RestaurantAdminProductManager _manager;
+    private LogisticianProductManager _manager;
 
     private int _numberOfItemsPerPage;
 
@@ -40,12 +40,12 @@ else
 
     private int _paginationEnd;
 
-    public RestaurantAdminProductMenuPage()
+    public LogisticianProductMenuPage()
     {
         _manager = new();
-        _products = _manager.GetAllSpecificProductsWithAmount();
+        _products = _manager.GetAllSpecificProducts();
         _numberOfItemsPerPage = 6;
-       
+
         if (_products.Count < _numberOfItemsPerPage)
         {
             _paginationStart = 0;
