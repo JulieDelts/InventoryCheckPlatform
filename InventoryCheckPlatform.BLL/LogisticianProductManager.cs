@@ -1,125 +1,114 @@
-﻿using InventoryCheckPlatform.Core.InputModels;
+﻿
+using InventoryCheckPlatform.Core.InputModels;
 using InventoryCheckPlatform.Core.OutputModels;
 
 namespace InventoryCheckPlatform.BLL
 {
-    public class RestaurantAdminProductManager
+    public class LogisticianProductManager
     {
         //TODO
-        public List<SpecificProductOutputModelWithAmount> GetAllSpecificProductsWithAmount()
+        public List<SpecificProductOutputModel> GetAllSpecificProducts()
         {
-            return new List<SpecificProductOutputModelWithAmount>
+            return new List<SpecificProductOutputModel>
             {
-                new SpecificProductOutputModelWithAmount()
+                new SpecificProductOutputModel()
                 {
                     Id= 1,
                     Name="банан",
                     Category = "фрукт",
                     Vendor = "Макака",
-                    Price = 25,
-                    Amount = 30
+                    Price = 25
                 },
-                new SpecificProductOutputModelWithAmount()
+                new SpecificProductOutputModel()
                 {
                     Id=2,
                     Name="картошечка",
                     Category = "овощ",
                     Vendor = "Лукаш",
-                    Price = 7,
-                    Amount = 500
+                    Price = 7
                 },
-                new SpecificProductOutputModelWithAmount()
+                new SpecificProductOutputModel()
                 {
                     Id=3,
                     Name="шампиньончик",
                     Category = "грибочек",
                     Vendor = "Лесочек",
-                    Price = 5,
-                    Amount = 47
-
+                    Price = 5
                 },
-                  new SpecificProductOutputModelWithAmount()
+                  new SpecificProductOutputModel()
                 {
                     Id=4,
                     Name="молоко",
                     Category = "молочные",
                     Vendor = "Коровка веселая",
-                    Price = 70,
-                    Amount = 39
+                    Price = 70
                 },
-                new SpecificProductOutputModelWithAmount()
+                new SpecificProductOutputModel()
                 {
                     Id=5,
                     Name="сырочек",
                     Category = "молочные",
                     Vendor = "Бобик",
-                    Price = 38,
-                    Amount = 48
+                    Price = 38
                 },
-                new SpecificProductOutputModelWithAmount()
+                new SpecificProductOutputModel()
                 {
                     Id=6,
                     Name="хлебушке",
                     Category = "мучное",
                     Vendor = "Крестьяне уставшие",
                     Price = 40,
-                    Amount = 56
                 },
-                new SpecificProductOutputModelWithAmount()
+                new SpecificProductOutputModel()
                 {
                     Id=7,
                     Name="ананасик",
                     Category = "фрукт",
                     Vendor = "Барбос",
                     Price = 120,
-                    Amount = 20
                 },
-                new SpecificProductOutputModelWithAmount()
+                new SpecificProductOutputModel()
                 {
                     Id=8,
                     Name="лосось",
                     Category = "рыбное",
                     Vendor = "Ктулху",
                     Price = 200,
-                    Amount = 74
                 },
-                new SpecificProductOutputModelWithAmount()
+                new SpecificProductOutputModel()
                 {
                     Id=9,
                     Name="говядина",
                     Category = "мясное",
                     Vendor = "Ваша жопа",
-                    Price = 300,
-                    Amount = 23
+                    Price = 300
                 },
-                new SpecificProductOutputModelWithAmount()
+                new SpecificProductOutputModel()
                 {
                     Id=10,
                     Name="джин",
                     Category = "алкоголь",
                     Vendor = "ОАО Помощь депрессивным",
-                    Price = 500,
-                    Amount = 29
+                    Price = 500
                 }
             };
         }
 
         //TODO
-        public SpecificProductOutputModelWithAmount GetSpecificProductById(int id)
+        public SpecificProductOutputModel GetSpecificProductById(int id)
         {
-            return new SpecificProductOutputModelWithAmount()
+            return new SpecificProductOutputModel()
             {
                 Id = id,
                 Name = "джин",
                 Category = "алкоголь",
                 Vendor = "ОАО Помощь депрессивным",
-                Price = 500,
-                Amount = 29
+                Price = 500
             };
         }
 
         //TODO
-        public int AddNewSpecificProduct(ExtendedSpecificProductInputModelWithAmount product)
+        public int AddNewSpecificProduct(SpecificProductInputModel product)
         {
             int id = 0;//обращаемся к методу дал
 
@@ -127,7 +116,7 @@ namespace InventoryCheckPlatform.BLL
         }
 
         //TODO
-        public int UpdateSpecificProduct(ExtendedSpecificProductInputModelWithAmount product)
+        public int UpdateSpecificProduct(SpecificProductInputModel product)
         {
             int id = 0;//обращаемся к методу дал
 

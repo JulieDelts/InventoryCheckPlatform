@@ -3,10 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InventoryCheckPlatform.Core.InputModels
 {
-    public class SpecificProductInputModel: BaseProductInputModel
+    public class SpecificProductInputModel
     {
         [Required(ErrorMessage = "Необходимо ввести название.")]
         public string Name { get; set; }
+
+        public int BaseProductId { get; set; }
 
         public string Category { get; set; } = string.Empty;
 

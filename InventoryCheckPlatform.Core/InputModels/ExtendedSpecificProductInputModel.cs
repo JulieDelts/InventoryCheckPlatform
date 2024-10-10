@@ -10,6 +10,8 @@ namespace InventoryCheckPlatform.Core.InputModels
         [Required(ErrorMessage = "Необходимо ввести название.")]
         public string Name { get; set; }
 
+        public int BaseProductId { get; set; }
+
         public string Category { get; set; } = string.Empty;
 
         [CustomFileExtensionValidation]
