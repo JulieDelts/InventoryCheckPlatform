@@ -11,10 +11,12 @@ namespace InventoryCheckPlatform.Core.DTOs
 
 		List<Menu>? Menus { get; set; }
 
-		List<BaseProduct> BaseProducts { get; set; }
-
 		public double Price { get; set; }
 
         public string? FileName { get; set; }
+
+        public List<RecipeBaseProductAmount>? RecipeBaseProductAmounts { get; set; }
+
+		public List<ReceiptRecipeAmount>? ReceiptRecipeAmounts { get; set; }
     }
 }

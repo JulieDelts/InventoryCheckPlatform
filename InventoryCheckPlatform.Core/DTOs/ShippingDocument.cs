@@ -9,8 +9,8 @@ namespace InventoryCheckPlatform.Core.DTOs
 
 		public Restaurant Restaurant { get; set; }
 
-		public List<SpecificProduct> Products { get; set; }
-
 		public double FullPrice { get; set; }
+
+		public List<ShippingDocumentSpecificProductAmount>? ShippingDocumentSpecificProductAmounts { get; set; }
 	}
 }
