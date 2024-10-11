@@ -13,13 +13,12 @@ namespace InventoryCheckPlatform.Core.DTOs
 
 		public string Role { get; set; }
 
-		public Restaurant Restaurant { get; set; }
+		public Restaurant? Restaurant { get; set; }
 
 		public string? Email { get; set; }
 
 		public string? Phone { get; set; }
 
 		public string? FileName { get; set; }
-
 	}
 }

@@ -11,6 +11,8 @@ namespace InventoryCheckPlatform.Core.DTOs
 
 		public string? FileName { get; set; }
 
-		public int? Amount { get; set; }
+		public List<SpecificProduct>? SpecificProduct { get; set; }
+
+		public List<RecipeBaseProductAmount>? RecipeBaseProductAmounts { get; set; }
 	}
 }

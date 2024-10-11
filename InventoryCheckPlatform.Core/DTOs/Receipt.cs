@@ -9,8 +9,8 @@ namespace InventoryCheckPlatform.Core.DTOs
 
 		public User Waiter { get; set; }
 
-		public List<Recipe> Recipes { get; set; }
-
 		public double FullPrice { get; set; }
-	}
+
+        public List<ReceiptRecipeAmount>? ReceiptRecipeAmounts { get; set; }
+    }
 }
