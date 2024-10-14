@@ -4,7 +4,6 @@
 	<div class="card-body">
 		<h5 class="card-title">@SpecificProduct.Name</h5>
 		<p class=" card-text">Id: @SpecificProduct.Id</p>
-		<p class="card-text">Категория: @SpecificProduct.Category </p>
 		<p class="card-text">Поставщик: @SpecificProduct.Vendor </p>
 		<p class="card-text">Цена: @SpecificProduct.Price </p>
 		<div class="dropdown">
@@ -34,7 +33,6 @@
 		ExtendedSpecificProductInputModel productInputModel = new()
 			{
 				Id = SpecificProduct.Id,
-				Category = SpecificProduct.Category,
 				Name = SpecificProduct.Name,
 				Vendor = SpecificProduct.Vendor,
 				Price = SpecificProduct.Price
