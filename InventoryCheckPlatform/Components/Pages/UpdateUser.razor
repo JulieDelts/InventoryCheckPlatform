@@ -46,10 +46,9 @@
 
     private SysAdminUserManager userManager = new SysAdminUserManager();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-       
-        user = userManager.GetUserById(userId);
+        user = await userManager.GetUserById(userId);
     }
 
 

@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\InventoryCheckPlatform.Core\InventoryCheckPlatform.Core.csproj" />
+    <ProjectReference Include="..\InventoryCheckPlatform.DAL\InventoryCheckPlatform.DAL.csproj" />
   </ItemGroup>
 
 </Project>

@@ -51,11 +51,10 @@
         _userManager = new();
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        _user = _userManager.GetUserById(Id);
-
-        base.OnInitialized();
+        _user = await _userManager.GetUserById(Id);
+        await base.OnInitializedAsync();
     }
 
 
