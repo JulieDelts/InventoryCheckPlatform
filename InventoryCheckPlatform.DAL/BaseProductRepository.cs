@@ -39,7 +39,14 @@ namespace InventoryCheckPlatform.DAL
         {
             var baseProducts = await _context.BaseProduct.ToListAsync();
 
-            return baseProducts;
+            if (baseProducts != null)
+            {
+                return baseProducts;
+            }
+            else
+            {
+                return new List<BaseProduct>();
+            }
         }
 
         public async Task<int> UpdateBaseProduct(BaseProduct baseProduct)

@@ -18,9 +18,6 @@
         <GridColumn TItem="SpecificProductOutputModel" HeaderText="Название" PropertyName="Name" SortKeySelector="item => item.Name">
             @context.Name
         </GridColumn>
-        <GridColumn TItem="SpecificProductOutputModel" HeaderText="Категория" PropertyName="Category" SortKeySelector="item => item.Category">
-            @context.Category
-        </GridColumn>
         <GridColumn TItem="SpecificProductOutputModel" HeaderText="Поставщик" PropertyName="Vendor" SortKeySelector="item => item.Vendor">
             @context.Vendor
         </GridColumn>
@@ -37,7 +34,7 @@
 
     private LogisticianProductManager _logisticianProductManager;
 
-    private SysAdminProductManager _sysAdminProductManager;
+    private SysAdminBaseProductManager _sysAdminProductManager;
 
     public AddSpecificProductMenuPage()
     {

@@ -9,12 +9,8 @@ namespace InventoryCheckPlatform.Core.OutputModels
 
 		public string Address { get; set; }
 
-		public User Admin { get; set; }
+        public string? FileName { get; set; }
 
-		public List<User> Waiters { get; set; }
-
-		public List<Menu>? Menus { get; set; }
-
-		public List<SpecificProduct>? SpecificProducts { get; set; }
+        public ShortUserOutputModel Admin { get; set; }
 	}
 }

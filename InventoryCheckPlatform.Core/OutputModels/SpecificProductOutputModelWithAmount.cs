@@ -1,6 +1,7 @@
 ﻿
 namespace InventoryCheckPlatform.Core.OutputModels
 {
+    //DELETE
     public class SpecificProductOutputModelWithAmount
     {
         public int Id { get; set; }

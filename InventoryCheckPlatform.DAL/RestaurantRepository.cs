@@ -38,7 +38,14 @@ namespace InventoryCheckPlatform.DAL
         {
             var restaurants = await _context.Restaurant.Include(r => r.Admin).ToListAsync();
 
-            return restaurants;
+            if (restaurants != null)
+            {
+                return restaurants;
+            }
+            else
+            {
+                return new List<Restaurant>();
+            }
         }
 
         public async Task<int> UpdateRestaurant(Restaurant restaurant)

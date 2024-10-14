@@ -15,7 +15,6 @@ namespace InventoryCheckPlatform.BLL
                 {
                     Id= 1,
                     Name="банан",
-                    Category = "фрукт",
                     Vendor = "Макака",
                     Price = 25
                 },
@@ -23,7 +22,6 @@ namespace InventoryCheckPlatform.BLL
                 {
                     Id=2,
                     Name="картошечка",
-                    Category = "овощ",
                     Vendor = "Лукаш",
                     Price = 7
                 },
@@ -31,7 +29,6 @@ namespace InventoryCheckPlatform.BLL
                 {
                     Id=3,
                     Name="шампиньончик",
-                    Category = "грибочек",
                     Vendor = "Лесочек",
                     Price = 5
                 },
@@ -39,7 +36,6 @@ namespace InventoryCheckPlatform.BLL
                 {
                     Id=4,
                     Name="молоко",
-                    Category = "молочные",
                     Vendor = "Коровка веселая",
                     Price = 70
                 },
@@ -47,7 +43,6 @@ namespace InventoryCheckPlatform.BLL
                 {
                     Id=5,
                     Name="сырочек",
-                    Category = "молочные",
                     Vendor = "Бобик",
                     Price = 38
                 },
@@ -55,7 +50,6 @@ namespace InventoryCheckPlatform.BLL
                 {
                     Id=6,
                     Name="хлебушке",
-                    Category = "мучное",
                     Vendor = "Крестьяне уставшие",
                     Price = 40,
                 },
@@ -63,7 +57,6 @@ namespace InventoryCheckPlatform.BLL
                 {
                     Id=7,
                     Name="ананасик",
-                    Category = "фрукт",
                     Vendor = "Барбос",
                     Price = 120,
                 },
@@ -71,7 +64,6 @@ namespace InventoryCheckPlatform.BLL
                 {
                     Id=8,
                     Name="лосось",
-                    Category = "рыбное",
                     Vendor = "Ктулху",
                     Price = 200,
                 },
@@ -79,7 +71,6 @@ namespace InventoryCheckPlatform.BLL
                 {
                     Id=9,
                     Name="говядина",
-                    Category = "мясное",
                     Vendor = "Ваша жопа",
                     Price = 300
                 },
@@ -87,7 +78,6 @@ namespace InventoryCheckPlatform.BLL
                 {
                     Id=10,
                     Name="джин",
-                    Category = "алкоголь",
                     Vendor = "ОАО Помощь депрессивным",
                     Price = 500
                 }
@@ -101,7 +91,6 @@ namespace InventoryCheckPlatform.BLL
             {
                 Id = id,
                 Name = "джин",
-                Category = "алкоголь",
                 Vendor = "ОАО Помощь депрессивным",
                 Price = 500
             };
