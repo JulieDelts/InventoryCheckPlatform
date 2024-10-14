@@ -1,0 +1,49 @@
+﻿@page "/product-for-recipe-details"
+<div class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Продукты</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                       Выберите продукты 
+                    </button>
+                    <ul class="dropdown-menu">
+                        @foreach (var emp in Products)
+                        {
+                            <li>@emp.Name</li>
+                        }
+                        <li><a class="dropdown-item" href="#">Действие</a></li>
+                        <li><a class="dropdown-item" href="#">Другое действие</a></li>
+                        <li><a class="dropdown-item" href="#">Что-то еще здесь</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public List<SpecificProductOutputModelWithAmount> Products { get; set; }
+
+    private Modal modal;
+
+    private async Task ShowProductComponent()
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            // { "Id", Products.Id }
+        };
+        await modal.ShowAsync<FullRecipeCard>(title: "Информация о рецепте", parameters: parameters);
+    }
+
+
+}

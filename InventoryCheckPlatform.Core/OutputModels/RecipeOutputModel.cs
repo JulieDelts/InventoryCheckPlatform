@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace InventoryCheckPlatform.Core.OutputModels
 {
-    public class MenuRecipeOutputModel
+    public class RecipeOutputModel
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Instructions { get; set; }
         public List<BaseProductOutputModel> Ingredients { get; set; } = new List<BaseProductOutputModel>();  
 
     }

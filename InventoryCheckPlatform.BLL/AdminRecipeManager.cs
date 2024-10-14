@@ -9,33 +9,36 @@ namespace InventoryCheckPlatform.BLL
 {
     public class AdminRecipeManager
     {
-        private List<MenuRecipeOutputModel> _recipes;
+        private List<ShortRecipeOutputModel> _recipes;
         private List<BaseProductOutputModel> _products;
         public AdminRecipeManager()
         {
 
-            _recipes = new List<MenuRecipeOutputModel>
+            _recipes = new List<ShortRecipeOutputModel>
             {
 
-                new MenuRecipeOutputModel
+                new ShortRecipeOutputModel
                 {
                     Id=1,
                     Title= "Спагетти карбонара",
-                    Ingredients = new List<BaseProductOutputModel>
-                    {
-                        new BaseProductOutputModel  { Id = 1, Name = "Спагетти", Category = "Бакалея"},
-                    new BaseProductOutputModel { Id = 2, Name = "Яйца", Category = "какая-то категория" },
-                    new BaseProductOutputModel { Id = 3, Name = "Пармезан",Category = "молочное" },
-                    new BaseProductOutputModel { Id = 4, Name = "Бекон", Category = "мяско" }
-
-                    }
 
                 },
-                new MenuRecipeOutputModel
+                new ShortRecipeOutputModel
                 {
                     Id=2,
                     Title= "Цезарь",
-                    Ingredients = new List<BaseProductOutputModel>
+
+                },
+
+            };
+        }
+        public async Task<RecipeOutputModel> GetRecipeByIdAsync(int id)
+        {
+            return new RecipeOutputModel()
+            {
+                Id = 2,
+                Title = "Цезарь",
+                Ingredients = new List<BaseProductOutputModel>
                     {
                         new BaseProductOutputModel  { Id = 5, Name = "Курица", Category = "мяско"},
                     new BaseProductOutputModel { Id = 6, Name = "Салат ", Category = "зеленуха" },
@@ -44,15 +47,27 @@ namespace InventoryCheckPlatform.BLL
 
                     }
 
-                },
-
             };
         }
-            public List<MenuRecipeOutputModel> GetAllRecipes()
+        public List<ShortRecipeOutputModel> GetAllRecipes()
+        {
+            return new List<ShortRecipeOutputModel>
             {
-                return _recipes;
-            }
-        public void AddRecipe(MenuRecipeOutputModel newRecipe)
+                new ShortRecipeOutputModel
+                {
+                    Id = 1,
+                    Title = "Спагетти карбонара",
+
+                },
+                new ShortRecipeOutputModel
+                {
+                    Id = 2,
+                    Title = "Цезарь",
+
+                },
+            };
+        }
+        public void AddRecipe(RecipeOutputModel newRecipe)
         {
 
         }
@@ -63,7 +78,10 @@ namespace InventoryCheckPlatform.BLL
         }
 
     }
-
 }
+
+    
+
+
 
 

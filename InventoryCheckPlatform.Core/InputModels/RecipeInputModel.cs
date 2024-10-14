@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace InventoryCheckPlatform.Core.InputModels
 {
-    public class MenuRecipeInputModel
+    public class RecipeInputModel
     {
+        public int Id { get; set; }
         public string Title { get; set; }
-        public string Instructions { get; set; }
+
+        [CustomFileExtensionValidation]
+        public string FileName { get; set; }
         public List<BaseProductInputModel> Ingredients { get; set; } = new List<BaseProductInputModel>();
     }
 }
