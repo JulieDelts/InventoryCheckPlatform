@@ -1,0 +1,57 @@
+﻿@page "/recipe-details/{Id:int}"
+@inject NavigationManager NavigationManager
+
+<div class="row">
+    <div class="col-5 col-md-3 text-end">Идентификатор:</div>
+    <div class="col-7 col-md-9">@_recipe.Id</div>
+</div>
+<div class="row">
+    <div class="col-5 col-md-3 text-end">Название:</div>
+    <div class="col-7 col-md-9">@_recipe.Title</div>
+</div>
+<div class="row">
+    <div class="card-title">Ингредиенты: @string.Join(",", _recipe.Ingredients.Select(e => e.Name).ToList())</div>
+</div>
+
+
+<div class="row mt-3">
+    <div class="col-md-12 text-end">
+        <Button Color="ButtonColor.Primary" @onclick="UpdateRecipe">Изменить</Button>
+    </div>  <div class="col-md-12 text-end">
+        <Button Color="ButtonColor.Link" @onclick="DeleteRecipe">Удалить</Button>
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public int Id { get; set; }
+
+    private RecipeOutputModel? _recipe;
+
+    private AdminRecipeManager _manager;
+
+    public FullRecipeCard()
+    {
+        _manager = new();
+        _recipe = new();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _recipe = await _manager.GetRecipeByIdAsync(Id);
+         base.OnInitializedAsync();
+    }
+
+
+    private void UpdateRecipe()
+    {
+        NavigationManager.NavigateTo($"/edit-recipe/{_recipe?.Id}");
+
+    }
+
+    private void DeleteRecipe()
+    {
+        NavigationManager.NavigateTo($"/edit-recipe/{_recipe?.Id}");
+    }
+}

@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Components\MinorElements\RecipeCard.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Components\MinorElements\RecipeCard.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazor.Bootstrap" Version="3.0.0" />
   </ItemGroup>
 
