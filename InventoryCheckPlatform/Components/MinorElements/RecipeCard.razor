@@ -1,0 +1,35 @@
+﻿@rendermode RenderMode.InteractiveServer
+
+<Card Class="card text-center mb-3" style="width: 20rem;">
+    <img src="/salad.png" width="200" height="200" class="card-img-top" />
+    <CardBody>
+        <CardTitle>Рецепт № @Recipe.Id</CardTitle>
+        <CardText>
+            Name: @Recipe.Title <br />
+        </CardText>
+        <Button Color="ButtonColor.Primary" Type="ButtonType.Button" @onclick="ShowProductComponent">Посмотерть рецепт</Button>
+    </CardBody>
+    
+</Card>
+
+
+<Modal @ref="modal" />
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public ShortRecipeOutputModel Recipe { get; set; }
+
+    private Modal modal;
+
+    private async Task ShowProductComponent()
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            { "Id", Recipe.Id }
+        };
+        await modal.ShowAsync<FullRecipeCard>(title: "Информация о рецепте", parameters: parameters);
+    }
+
+
+}
