@@ -25,7 +25,12 @@ else
     public SysAdminUserPage()
     {
         _manager = new();
-        _users = _manager.GetAllUsersShortInfo();
+        _users = new();
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        _users = await _manager.GetAllUsersShortInfo();
+        await base.OnInitializedAsync();
+    }
 }
