@@ -11,7 +11,7 @@ namespace InventoryCheckPlatform.Core.OutputModels
         public int Id { get; set; }
         public string Title { get; set; }
         public string Instructions { get; set; }
-        public List<BasePoductOutputModel> Ingredients { get; set; } = new List<BasePoductOutputModel>();  
+        public List<BaseProductOutputModel> Ingredients { get; set; } = new List<BaseProductOutputModel>();  
 
     }
 }

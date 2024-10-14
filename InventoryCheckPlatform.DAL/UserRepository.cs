@@ -40,7 +40,14 @@ namespace InventoryCheckPlatform.DAL
         {
             var users = await _context.User.Include(u => u.Restaurant).ToListAsync();
 
-            return users;
+            if (users != null)
+            {
+                return users;
+            }
+            else
+            {
+                return new List<User>();
+            }
         }
 
         public async Task<int> UpdateUser(User user)

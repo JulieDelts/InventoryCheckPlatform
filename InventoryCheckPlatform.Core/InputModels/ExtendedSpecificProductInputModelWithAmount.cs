@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InventoryCheckPlatform.Core.InputModels
 {
+    //DELETE
     public class ExtendedSpecificProductInputModelWithAmount
     {
         public int Id { get; set; }

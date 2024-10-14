@@ -3,69 +3,69 @@ using InventoryCheckPlatform.Core.OutputModels;
 
 namespace InventoryCheckPlatform.BLL
 {
-    public class SysAdminProductManager
+    public class SysAdminBaseProductManager
     {
         //TODO
-        public List<BasePoductOutputModel> GetAllBaseProducts()
+        public List<BaseProductOutputModel> GetAllBaseProducts()
         {
-            return new List<BasePoductOutputModel>
+            return new List<BaseProductOutputModel>
             {
-                new BasePoductOutputModel()
+                new BaseProductOutputModel()
                 {
                     Id= 1,
                     Name="банан",
                     Category = "фрукт"
 
                 },
-                new BasePoductOutputModel()
+                new BaseProductOutputModel()
                 {
                     Id=2,
                     Name="картошечка",
                     Category = "овощ"
                 },
-                new BasePoductOutputModel()
+                new BaseProductOutputModel()
                 {
                     Id=3,
                     Name="шампиньончик",
                     Category = "грибочек"
                 },
-                  new BasePoductOutputModel()
+                  new BaseProductOutputModel()
                 {
                     Id=4,
                     Name="молоко",
                     Category = "молочные"
                 },
-                new BasePoductOutputModel()
+                new BaseProductOutputModel()
                 {
                     Id=5,
                     Name="сырочек",
                     Category = "молочные"
                 },
-                new BasePoductOutputModel()
+                new BaseProductOutputModel()
                 {
                     Id=6,
                     Name="хлебушке",
                     Category = "мучное"
                 },
-                new BasePoductOutputModel()
+                new BaseProductOutputModel()
                 {
                     Id=7,
                     Name="ананасик",
                     Category = "фрукт"
                 },
-                new BasePoductOutputModel()
+                new BaseProductOutputModel()
                 {
                     Id=8,
                     Name="лосось",
                     Category = "рыбное"
                 },
-                new BasePoductOutputModel()
+                new BaseProductOutputModel()
                 {
                     Id=9,
                     Name="говядина",
                     Category = "мясное"
                 },
-                new BasePoductOutputModel()
+                new BaseProductOutputModel()
                 {
                     Id=10,
                     Name="джин",
@@ -75,9 +75,9 @@ namespace InventoryCheckPlatform.BLL
         }
 
         //TODO
-        public BasePoductOutputModel GetBaseProductById(int id)
+        public BaseProductOutputModel GetBaseProductById(int id)
         {
-            return new BasePoductOutputModel()
+            return new BaseProductOutputModel()
             {
                 Id = id,
                 Name = "малина",

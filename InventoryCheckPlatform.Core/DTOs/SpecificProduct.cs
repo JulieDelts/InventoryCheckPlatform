@@ -9,7 +9,9 @@ namespace InventoryCheckPlatform.Core.DTOs
 
 		public double Price { get; set; }
 
-		public BaseProduct BaseProduct { get; set; }
+        public string? FileName { get; set; }
+
+        public BaseProduct BaseProduct { get; set; }
 
         public List<RestaurantSpecificProductAmount>? RestaurantSpecificProductAmounts { get; set; }
 

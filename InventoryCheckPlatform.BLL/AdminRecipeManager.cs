@@ -10,7 +10,7 @@ namespace InventoryCheckPlatform.BLL
     public class AdminRecipeManager
     {
         private List<MenuRecipeOutputModel> _recipes;
-        private List<BasePoductOutputModel> _products;
+        private List<BaseProductOutputModel> _products;
         public AdminRecipeManager()
         {
 
@@ -21,12 +21,12 @@ namespace InventoryCheckPlatform.BLL
                 {
                     Id=1,
                     Title= "Спагетти карбонара",
-                    Ingredients = new List<BasePoductOutputModel>
+                    Ingredients = new List<BaseProductOutputModel>
                     {
-                        new BasePoductOutputModel  { Id = 1, Name = "Спагетти", Category = "Бакалея"},
-                    new BasePoductOutputModel { Id = 2, Name = "Яйца", Category = "какая-то категория" },
-                    new BasePoductOutputModel { Id = 3, Name = "Пармезан",Category = "молочное" },
-                    new BasePoductOutputModel { Id = 4, Name = "Бекон", Category = "мяско" }
+                        new BaseProductOutputModel  { Id = 1, Name = "Спагетти", Category = "Бакалея"},
+                    new BaseProductOutputModel { Id = 2, Name = "Яйца", Category = "какая-то категория" },
+                    new BaseProductOutputModel { Id = 3, Name = "Пармезан",Category = "молочное" },
+                    new BaseProductOutputModel { Id = 4, Name = "Бекон", Category = "мяско" }
 
                     }
 
@@ -35,12 +35,12 @@ namespace InventoryCheckPlatform.BLL
                 {
                     Id=2,
                     Title= "Цезарь",
-                    Ingredients = new List<BasePoductOutputModel>
+                    Ingredients = new List<BaseProductOutputModel>
                     {
-                        new BasePoductOutputModel  { Id = 5, Name = "Курица", Category = "мяско"},
-                    new BasePoductOutputModel { Id = 6, Name = "Салат ", Category = "зеленуха" },
-                    new BasePoductOutputModel { Id = 7, Name = "Гренки",Category = "хлебушек" },
-                    new BasePoductOutputModel { Id = 8, Name = "Соус Цезарь", Category = "соусы" }
+                        new BaseProductOutputModel  { Id = 5, Name = "Курица", Category = "мяско"},
+                    new BaseProductOutputModel { Id = 6, Name = "Салат ", Category = "зеленуха" },
+                    new BaseProductOutputModel { Id = 7, Name = "Гренки",Category = "хлебушек" },
+                    new BaseProductOutputModel { Id = 8, Name = "Соус Цезарь", Category = "соусы" }
 
                     }
 

@@ -22,7 +22,7 @@ namespace InventoryCheckPlatform.BLL
                     Id = 1,
                     Name = "Pasha",
                     RestaurantId = 1,
-                    UserRole = "Admin"
+                    Role = "Admin"
                 },
 
                 new ShortUserOutputModel()
@@ -30,7 +30,7 @@ namespace InventoryCheckPlatform.BLL
                     Id = 2,
                     Name = "Sergey",
                     RestaurantId = 1,
-                    UserRole = "Waiter"
+                    Role = "Waiter"
                 },
                 new ShortUserOutputModel()
 
@@ -38,7 +38,7 @@ namespace InventoryCheckPlatform.BLL
                     Id = 3,
                     Name = "Igor",
                     RestaurantId = 3,
-                    UserRole = "Waiter"
+                    Role = "Waiter"
                 },
                 new ShortUserOutputModel()
 
@@ -46,21 +46,21 @@ namespace InventoryCheckPlatform.BLL
                     Id = 4,
                     Name = "Irina",
                     RestaurantId = 1,
-                    UserRole = "Waiter"
+                    Role = "Waiter"
                 },
                 new ShortUserOutputModel()
                 {
                     Id = 5,
                     Name = "Olga",
                     RestaurantId = 1,
-                    UserRole = "Waiter"
+                    Role = "Waiter"
                 },
                 new ShortUserOutputModel()
                 {
                     Id = 6,
                     Name = "Oleg",
                     RestaurantId = 0,
-                    UserRole = "Logist"
+                    Role = "Logist"
                 }
             };
         }
@@ -74,10 +74,10 @@ namespace InventoryCheckPlatform.BLL
                 {
                 Id = 1,
                 Name = "Pavel Gubin ",
-                Mail = "kakoitoTam@mail.ru",
+                Email = "kakoitoTam@mail.ru",
                 Login = "pgubin",
                 Password = "666",
-                UserRole = "Admin",
+                Role = "Admin",
                 RestaurantId = 1
                 },
 
@@ -86,45 +86,45 @@ namespace InventoryCheckPlatform.BLL
                 {
                     Id = 2,
                     Name = "Sergey Trofimov",
-                    Mail = "gavgav@mail.ru",
+                    Email = "gavgav@mail.ru",
                     Login = "strofimov",
                     Password = "ggg",
-                    UserRole = "Admin",
+                    Role = "Admin",
                     RestaurantId = 2
                 },
 
 
               new FullUserOutputModel()
               { Id = 3, Name = "Igor Petrov",
-                  Mail = "igor@mail.ru",
+                  Email = "igor@mail.ru",
                   Login = "ipetrov",
                   Password = "123",
-                  UserRole = "Waiter",
+                  Role = "Waiter",
                  RestaurantId = 3
               },
 
                 new FullUserOutputModel()
                 { Id = 4, Name = "Irina Ivanova",
-                    Mail = "irina@mail.ru",
+                    Email = "irina@mail.ru",
                     Login = "iivanova",
                     Password = "pass",
-                    UserRole = "Waiter",
+                    Role = "Waiter",
                     RestaurantId = 1
                 },
                 new FullUserOutputModel()
                 { Id = 5, Name = "Olga Sidorova",
-                    Mail = "olga@mail.ru",
+                    Email = "olga@mail.ru",
                     Login = "osidorova",
                     Password = "password",
-                    UserRole = "Waiter",
+                    Role = "Waiter",
                     RestaurantId = 1
                 },
                 new FullUserOutputModel()
                 { Id = 6, Name = "Oleg Smirnov",
-                    Mail = "oleg@mail.ru",
+                    Email = "oleg@mail.ru",
                     Login = "osmnov",
                     Password = "abc",
-                    UserRole = "Logist",
+                    Role = "Logist",
                     RestaurantId = 0
                 }
             };
@@ -141,10 +141,10 @@ namespace InventoryCheckPlatform.BLL
             if (existingUser != null)
             {
                 existingUser.Name = updatedUser.Name;
-                existingUser.Mail = updatedUser.Mail;
+                existingUser.Email = updatedUser.Email;
                 existingUser.Login = updatedUser.Login;
                 existingUser.Password = updatedUser.Password; 
-                existingUser.UserRole = updatedUser.UserRole;
+                existingUser.Role = updatedUser.Role;
                 existingUser.RestaurantId = updatedUser.RestaurantId;
 
             }

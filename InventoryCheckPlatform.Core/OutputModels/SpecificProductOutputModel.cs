@@ -7,12 +7,12 @@ namespace InventoryCheckPlatform.Core.OutputModels
 
         public string Name { get; set; }
 
-        public int BaseProductId { get; set; }
-
-        public string Category { get; set; }
+        public BaseProductOutputModel BaseProduct { get; set; }
 
         public string Vendor { get; set; }
 
         public double Price { get; set; }
+
+        public string? FileName { get; set; }
     }
 }
