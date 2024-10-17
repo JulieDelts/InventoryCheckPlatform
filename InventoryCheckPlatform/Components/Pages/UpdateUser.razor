@@ -3,38 +3,51 @@
 @attribute [Authorize(Roles = "администратор")]
 @inject NavigationManager NavigationManager
 @rendermode RenderMode.InteractiveServer
+@inject IConfiguration config
 
-<h3>изменить пользователя</h3>
-<EditForm Model="user" OnValidSubmit="HandleValidSubmit">
+
+<h3>Редактирование информации о пользователе</h3>
+<EditForm Model="@_updatedUser" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
-
-    <div class="form-group">
-        <label for="name">Имя:</label>
-        <InputText id="name" class="form-control" @bind-Value="user.Name" />
-        <ValidationMessage For="@(() => user.Name)" />
+    <div class="mb-3 text-center">
+        <label class="form-label">Имя:<span class="text-danger">*</span></label>
+        <InputText @bind-Value="_updatedUser.Name" Placeholder="@_user.Name" class="form-control" />
     </div>
-
-    <div class="form-group">
-        <label for="email">Email:</label>
-        <InputText id="email" class="form-control" @bind-Value="user.Email" />
-        <ValidationMessage For="@(() => user.Email)" />
+    <div class="mb-3 text-center">
+        <label class="form-label">Роль:<span class="text-danger">*</span></label>
+        <InputText @bind-Value="_updatedUser.Role" Placeholder="@_user.Role" class="form-control" />
     </div>
-
-    <div class="form-group">
-        <label for="role">Роль:</label>
-        <InputText id="role" class="form-control" @bind-Value="user.Role" />
-        <ValidationMessage For="@(() => user.Role)" />
+    <div class="mb-3 text-center">
+        <label class="form-label">Логин:<span class="text-danger">*</span></label>
+        <InputText @bind-Value="_updatedUser.Login" Placeholder="@_user.Login" class="form-control" />
     </div>
-
-    <div class="form-group">
-        <label for="restaurantId">ID ресторана:</label>
-        <InputNumber id="restaurantId" class="form-control" @bind-Value="user.RestaurantId" />
-        <ValidationMessage For="@(() => user.RestaurantId)" />
+    <div class="mb-3 text-center">
+        <label class="form-label">Пароль:<span class="text-danger">*</span></label>
+        <InputText @bind-Value="_updatedUser.Password" Placeholder="@_user.Password" class="form-control" />
     </div>
-
-    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-    <button type="button" class="btn btn-secondary" @onclick="Cancel">Отменить</button>
+    <div class="mb-3 text-center">
+        <label class="form-label">Идентификатор ресторана:</label>
+        <InputNumber @bind-Value="_updatedUser.RestaurantId" Placeholder="@_user.RestaurantId" class="form-control" />
+    </div>
+    <div class="mb-3 text-center">
+        <label class="form-label">Электронная почта:</label>
+        <InputText @bind-Value="_updatedUser.Email" Placeholder="@_user.Email" class="form-control" />
+    </div>
+    <div class="mb-3 text-center">
+        <label class="form-label">Телефон:</label>
+        <InputText @bind-Value="_updatedUser.Phone" Placeholder="@_user.Phone" class="form-control" />
+    </div>
+    <div class="mb-3 text-center">
+        <label class="form-label">Изображение:</label>
+        <InputFile OnChange="@LoadFile" accept=".png,.jpg,.jpeg" class="form-control"></InputFile>
+	</div> 
+    <div class="row">
+		<div class="col-md-14 text-center">
+			<input class="btn btn-success" type="submit" value="Подтвердить">
+			<button type="button" class="btn btn-secondary" @onclick="Cancel">Отменить</button>
+		</div>
+    </div> 
 </EditForm>
 
 @code {
@@ -42,28 +55,68 @@
     [Parameter]
     public int userId { get; set; }
 
-    private FullUserOutputModel user = new FullUserOutputModel();
+    private FullUserOutputModel _user;
 
-    private SysAdminUserManager userManager = new SysAdminUserManager();
+    private ExtendedUserInputModel _updatedUser;
+
+    private SysAdminUserManager _userManager;
+
+    private IBrowserFile? file;
+
+    public UpdateUser()
+    {
+        _userManager = new();
+
+        _user = new();
+
+        _updatedUser = new();
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        user = await userManager.GetUserById(userId);
+        _user = await _userManager.GetUserById(userId);
     }
 
-
-    private void HandleValidSubmit() //(обработка )
+    private async Task HandleValidSubmit() 
     {
-        
-        NavigationManager.NavigateTo("/user-list-page");
+        var relativePath = await CaptureFile();
+        _user.FileName = relativePath;
+
+       await _userManager.UpdateUser(_updatedUser);
+
+       NavigationManager.NavigateTo("/user-list-page");
     }
 
-    //TO DO (не перенаправляет)
+    private void LoadFile(InputFileChangeEventArgs e)
+    {
+        file = e.File;
+    }
+
+    private async Task<string> CaptureFile()
+    {
+        if (file is null)
+        {
+            return "";
+        }
+
+        string newFileName = Path.ChangeExtension(
+        Path.GetRandomFileName(),
+        Path.GetExtension(file.Name));
+
+        string path = Path.Combine(config.GetValue<string>("FileStorage"), "UserImages", newFileName);
+
+        string relativePath = Path.Combine("UserImages", newFileName);
+
+        await using FileStream fs = new(path, FileMode.Create);
+        await file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 30).CopyToAsync(fs);
+
+        return relativePath;
+    }
+
     private void Cancel()
     {
-     
         NavigationManager.NavigateTo("/user-list-page");
     }
 }
 
-}
+

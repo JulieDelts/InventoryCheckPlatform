@@ -3,9 +3,11 @@
 @attribute [Authorize(Roles = "администратор")]
 @rendermode RenderMode.InteractiveServer
 
+<UserForm />
+
 @if (_users.Count > 0)
 {
-    <div style="display:flex; justify-content: flex-start; flex-wrap:wrap;">
+    <div class="card-holder">
    @foreach (var p in _users)
     {
         <ShortUserCard User="@p"/>

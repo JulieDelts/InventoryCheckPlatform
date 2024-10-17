@@ -1,72 +1,99 @@
 ﻿@page "/user-details/{Id:int}"
 @inject NavigationManager NavigationManager
+@inject IConfiguration config
 
+@if (_user.FileName != null)
+{
+    <img src="@CreateFullPath(_user.FileName)" alt="Фото пользователя" width="170" height="100">
+}
+else
+{
+    <img src="Images\\UserImages\\user-profile-default.png" alt="Фото пользователя" width="170" height="100">
+}
 <div class="row">
-    <div class="col-5 col-md-3 text-end">Id:</div>
+    <div class="col-5 col-md-3">Id:</div>
     <div class="col-7 col-md-9">@_user.Id</div>
 </div>
 <div class="row">
-    <div class="col-5 col-md-3 text-end">Name:</div>
+    <div class="col-5 col-md-3">Имя:</div>
     <div class="col-7 col-md-9">@_user.Name</div>
 </div>
 <div class="row">
-    <div class="col-5 col-md-3 text-end">Mail:</div>
-    <div class="col-7 col-md-9">@_user.Email</div>
-</div>
-<div class="row">
-    <div class="col-5 col-md-3 text-end">Login:</div>
-    <div class="col-7 col-md-9">@_user.Login</div>
-</div>
-<div class="row">
-    <div class="col-5 col-md-3 text-end">Password:</div>
-    <div class="col-7 col-md-9">@_user.Password</div>
-</div>
-<div class="row">
-    <div class="col-5 col-md-3 text-end">Role:</div>
+    <div class="col-5 col-md-3">Роль:</div>
     <div class="col-7 col-md-9">@_user.Role</div>
 </div>
 <div class="row">
-    <div class="col-5 col-md-3 text-end">RestaurantId:</div>
-    <div class="col-7 col-md-9">@_user.RestaurantId</div>
+    <div class="col-5 col-md-3">Логин:</div>
+    <div class="col-7 col-md-9">@_user.Login</div>
 </div>
-<div class="row mt-3">
-    <div class="col-md-12 text-end">
-        <Button Color="ButtonColor.Primary" @onclick="EditUser">Изменить</Button>
-    </div>  <div class="col-md-12 text-end">
-        <Button Color="ButtonColor.Link" @onclick="DeleteUser">Удалить</Button>
+<div class="row">
+    <div class="col-5 col-md-3">Пароль:</div>
+    <div class="col-7 col-md-9">@_user.Password</div>
+</div>
+@if (_user.RestaurantId != null)
+{
+    <div class="row">
+        <div class="col-5 col-md-3">Идентификатор ресторана:</div>
+        <div class="col-7 col-md-9">@_user.RestaurantId</div>
     </div>
+}
+@if (_user.Email != null)
+{
+    <div class="row">
+        <div class="col-5 col-md-3">Электронная почта:</div>
+        <div class="col-7 col-md-9">@_user.Email</div>
+    </div>
+}
+@if (_user.Phone != null)
+{
+    <div class="row">
+        <div class="col-5 col-md-3">Телефон:</div>
+        <div class="col-7 col-md-9">@_user.Phone</div>
+    </div>
+}
+<div class="col-md-14 text-center">
+    <button class="btn btn-success" @onclick="EditUser">Редактировать</button>
+    <button class="btn btn-light " @onclick="DeleteUser">Удалить</button>
 </div>
+
 
 @code
 {
     [Parameter]
     public int Id { get; set; }
 
-    private FullUserOutputModel? _user;
+    private FullUserOutputModel _user;
 
-    private SysAdminUserManager _userManager;
+    private SysAdminUserManager _manager;
 
     public FullUserCard()
     {
-        _userManager = new();
+        _manager = new();
+
         _user = new();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        _user = await _userManager.GetUserById(Id);
+        _user = await _manager.GetUserById(Id);
         await base.OnInitializedAsync();
     }
 
+    private string CreateFullPath(string relativePath)
+    {
+        string path = Path.Combine("Images", relativePath);
+        return path;
+    }
 
     private void EditUser()
     {
-        NavigationManager.NavigateTo($"/edit-user/{_user?.Id}");
-
+        NavigationManager.NavigateTo($"/edit-user/{_user.Id}");
     }
 
-    private void DeleteUser()
+    private async Task DeleteUser()
     {
-        NavigationManager.NavigateTo($"/edit-user/{_user?.Id}");
+        await _manager.DeleteUser(_user.Id);
+
+        NavigationManager.NavigateTo($"/user-list-page");
     }
 }
