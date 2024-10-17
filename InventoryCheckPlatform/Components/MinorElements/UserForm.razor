@@ -1,0 +1,110 @@
+﻿@rendermode RenderMode.InteractiveServer
+@inject IConfiguration config
+
+<div class="dropdown-center">
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Добавить пользователя
+    </button>
+    <ul class="dropdown-menu">
+        <EditForm Model="@_user" OnValidSubmit="@Submit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="mb-3 text-center">
+                <label class="form-label">Имя:<span class="text-danger">*</span></label>
+                <InputText @bind-Value="_user.Name" class="form-control" />
+            </div>
+            <div class="mb-3 text-center">
+                <label class="form-label">Роль:<span class="text-danger">*</span></label>
+                <InputText @bind-Value="_user.Role" class="form-control" />
+            </div>
+            <div class="mb-3 text-center">
+                <label class="form-label">Логин:<span class="text-danger">*</span></label>
+                <InputText @bind-Value="_user.Login" class="form-control" />
+            </div>
+            <div class="mb-3 text-center">
+                    <label class="form-label">Пароль:<span class="text-danger">*</span></label>
+                    <InputText @bind-Value="_user.Password" class="form-control" />
+            </div>
+            <div class="mb-3 text-center">
+                <label class="form-label">Идентификатор ресторана:</label>
+                <InputNumber @bind-Value="_user.RestaurantId" class="form-control" />
+            </div>
+            <div class="mb-3 text-center">
+                <label class="form-label">Электронная почта:</label>
+                <InputText @bind-Value="_user.Email" class="form-control" />
+            </div>
+            <div class="mb-3 text-center">
+                <label class="form-label">Телефон:</label>
+                <InputText @bind-Value="_user.Phone" class="form-control" />
+            </div>
+            <div class="mb-3 text-center">
+                <label class="form-label">Изображение:</label>
+                <InputFile OnChange="@LoadFile" accept=".png,.jpg,.jpeg" class="form-control"></InputFile>
+            </div>
+            <div class="row">
+                <div class="col-md-14 text-center">
+                    <input class="btn btn-success" type="submit" value="Подтвердить">
+                    <input class="btn btn-light" type="reset" value="Сбросить" @onclick="Refresh">
+                </div>
+            </div>
+        </EditForm>
+    </ul>
+</div>
+
+@code
+{
+    private UserInputModel _user;
+
+    private SysAdminUserManager _manager;
+
+    private IBrowserFile? file;
+
+    public UserForm()
+    {
+        _user = new();
+
+        _manager = new();
+    }
+
+    private async Task Submit()
+    {
+        var relativePath = await CaptureFile();
+        _user.FileName = relativePath;
+
+        await _manager.AddUser(_user);
+
+        Refresh();
+    }
+
+    private void LoadFile(InputFileChangeEventArgs e)
+    {
+        file = e.File;
+    }
+
+    private async Task<string> CaptureFile()
+    {
+        if (file is null)
+        {
+            return "";
+        }
+
+        string newFileName = Path.ChangeExtension(
+        Path.GetRandomFileName(),
+        Path.GetExtension(file.Name));
+
+        string path = Path.Combine(config.GetValue<string>("FileStorage"), "UserImages", newFileName);
+
+        string relativePath = Path.Combine("UserImages", newFileName);
+
+        await using FileStream fs = new(path, FileMode.Create);
+        await file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 30).CopyToAsync(fs);
+
+        return relativePath;
+    }
+
+    private void Refresh()
+    {
+        _user = new();
+    }
+}
+

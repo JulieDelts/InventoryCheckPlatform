@@ -10,5 +10,7 @@ namespace InventoryCheckPlatform.Core.OutputModels
         public string Role { get; set; }
 
         public int? RestaurantId { get; set; }
+
+        public string? FileName { get; set; }
     }
 }

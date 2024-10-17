@@ -1,18 +1,30 @@
 ﻿@rendermode RenderMode.InteractiveServer
 
-<Card Style="width: 18rem;">
-    <CardBody>
-        <CardTitle>@User.Name</CardTitle>
-        <CardText>
-            ID: @User.Id <br />
-            Role: @User.Role <br />
-            Restaurant ID: @User.RestaurantId
-        </CardText>
-        <Button Color="ButtonColor.Primary" Type="ButtonType.Button" @onclick="ShowProductComponent">Открыть профиль</Button>
-    </CardBody>
-</Card>
+<div class="card">
+    @if (User.FileName != null)
+    {
+        <img src="@CreateFullPath(User.FileName)" alt="Фото пользователя" width="170" height="100">
+    }
+    else
+    {
+        <img src="Images\\UserImages\\user-profile-default.png" alt="Фото пользователя" width="170" height="100">
+    }
+    <div class="card-body">
+        <h5 class="card-title">@User.Name</h5>
+        <p class=" card-text"> Id: @User.Id</p>
+        <p class="card-text"> Роль: @User.Role</p>
+        @if (User.RestaurantId != null) 
+        {
+            <p class="card-text">Идентификатор ресторана: @User.RestaurantId</p>
+        }
+        <button class="btn" type="button" @onclick="ShowProductComponent">
+            Открыть профиль
+        </button>
+        </div>
 
-<Modal @ref="modal" />
+        <Modal @ref="modal" UseStaticBackdrop="false" CloseOnEscape="true" />
+</div>
+
 
 @code {
     [Parameter]
@@ -30,5 +42,9 @@
         await modal.ShowAsync<FullUserCard>(title: "Информация о пользователе", parameters: parameters);
     }
 
-   
+    private string CreateFullPath(string relativePath)
+    {
+        string path = Path.Combine("Images", relativePath);
+        return path;
+    }
 }
