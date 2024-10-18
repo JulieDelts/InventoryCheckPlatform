@@ -22,7 +22,7 @@
 
 
 @code {
-    private Employee? employee;
+  
     private int tabindex = 2;
     public int EmployeeId { get; set; }
     private List<BaseProductForRecipeOutputModel> products { get; set; }
@@ -33,7 +33,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // get employee with {EmployeeId} from DB
+        
 
         products = await recipeManager.GetAllProductsAsync();
 
@@ -49,10 +49,6 @@
     {
         selectedProduct = product;
     }// Сохранить выбранный продукт // Здесь вы можете выполнить дополнительные действия с выбранным продуктом }
-    class Employee()
-    { public string FirstName { get; set; }
-     public string LastName { get; set; }
 
-    }
 }
 
