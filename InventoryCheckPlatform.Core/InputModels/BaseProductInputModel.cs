@@ -11,5 +11,6 @@ namespace InventoryCheckPlatform.Core.InputModels
 
         [CustomFileExtensionValidation]
         public string? FileName { get; set; }
+
     }
 }

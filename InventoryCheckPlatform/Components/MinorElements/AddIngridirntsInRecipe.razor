@@ -1,49 +1,58 @@
-﻿@page "/product-for-recipe-details"
-<div class="modal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Продукты</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-            </div>
-            <div class="modal-body">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                       Выберите продукты 
-                    </button>
-                    <ul class="dropdown-menu">
-                        @foreach (var emp in Products)
-                        {
-                            <li>@emp.Name</li>
-                        }
-                        <li><a class="dropdown-item" href="#">Действие</a></li>
-                        <li><a class="dropdown-item" href="#">Другое действие</a></li>
-                        <li><a class="dropdown-item" href="#">Что-то еще здесь</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Добавить</button>
-            </div>
-        </div>
-    </div>
+﻿
+<div class="row">
+</div>
+<div class="row">
+    <Dropdown
+              Color="DropdownColor.Secondary">
+        <DropdownToggleButton tabindex=@tabindex>@(selectedProduct?.Name ?? "Выберите продукт")</DropdownToggleButton>
+        <DropdownMenu>
+            @foreach (var pr in products)
+            {
+                <DropdownItem Type="DropdownItemType.Link" @onclick="() => SelectProduct(pr)">
+                    @pr.Name
+                </DropdownItem>
+            }
+        </DropdownMenu>
+    </Dropdown>
+
+
+    <button type="submit" class="btn btn-primary">Добавить</button>
 </div>
 
+
+
 @code {
-    [Parameter]
-    [EditorRequired]
-    public List<SpecificProductOutputModelWithAmount> Products { get; set; }
+    private Employee? employee;
+    private int tabindex = 2;
+    public int EmployeeId { get; set; }
+    private List<BaseProductForRecipeOutputModel> products { get; set; }
+    private AdminRecipeManager recipeManager = new AdminRecipeManager();
 
-    private Modal modal;
+    List<string> messages = new List<string>();
+    private BaseProductForRecipeOutputModel selectedProduct; // Переменная для хранения выбранного продукта
 
-    private async Task ShowProductComponent()
+    protected override async Task OnInitializedAsync()
     {
-        var parameters = new Dictionary<string, object>
-        {
-            // { "Id", Products.Id }
-        };
-        await modal.ShowAsync<FullRecipeCard>(title: "Информация о рецепте", parameters: parameters);
+        // get employee with {EmployeeId} from DB
+
+        products = await recipeManager.GetAllProductsAsync();
+
+        base.OnInitialized();
     }
+    private int OnDropdownHidingAsync(int i)
+    {
 
+        messages.Add(new("OnHiding"));
+        return i;
+    }
+    private void SelectProduct(BaseProductForRecipeOutputModel product)
+    {
+        selectedProduct = product;
+    }// Сохранить выбранный продукт // Здесь вы можете выполнить дополнительные действия с выбранным продуктом }
+    class Employee()
+    { public string FirstName { get; set; }
+     public string LastName { get; set; }
 
+    }
 }
+
