@@ -1,4 +1,5 @@
-﻿using InventoryCheckPlatform.Core.OutputModels;
+﻿using InventoryCheckPlatform.Core.InputModels;
+using InventoryCheckPlatform.Core.OutputModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,12 +39,12 @@ namespace InventoryCheckPlatform.BLL
             {
                 Id = 2,
                 Title = "Цезарь",
-                Ingredients = new List<BaseProductOutputModel>
+                Ingredients = new List<BaseProductForRecipeInputModel>
                     {
-                        new BaseProductOutputModel  { Id = 5, Name = "Курица", Category = "мяско"},
-                    new BaseProductOutputModel { Id = 6, Name = "Салат ", Category = "зеленуха" },
-                    new BaseProductOutputModel { Id = 7, Name = "Гренки",Category = "хлебушек" },
-                    new BaseProductOutputModel { Id = 8, Name = "Соус Цезарь", Category = "соусы" }
+                        new BaseProductForRecipeInputModel  { Id = 5, Name = "Курица", Count="2"},
+                    new BaseProductForRecipeInputModel { Id = 6, Name = "Салат ", Count="2"},
+                    new BaseProductForRecipeInputModel { Id = 7, Name = "Гренки", Count="2"},
+                    new BaseProductForRecipeInputModel { Id = 8, Name = "Соус Цезарь", Count="2"}
 
                     }
 
@@ -75,6 +76,19 @@ namespace InventoryCheckPlatform.BLL
         public void DeleteRecipe(int id)
         {
 
+        }
+        public async Task<List<BaseProductForRecipeOutputModel>> GetAllProductsAsync()
+        {
+            return new List<BaseProductForRecipeOutputModel>()
+            {
+                        new BaseProductForRecipeOutputModel  { Id = 5, Name = "Курица"},
+                    new BaseProductForRecipeOutputModel { Id = 6, Name = "Салат "},
+                    new BaseProductForRecipeOutputModel { Id = 7, Name = "Гренки"},
+                    new BaseProductForRecipeOutputModel { Id = 8, Name = "Соус Цезарь"}
+
+                    
+
+            };
         }
 
     }

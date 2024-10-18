@@ -4,7 +4,7 @@
 @inject NavigationManager NavigationManager
 @rendermode RenderMode.InteractiveServer
 
-<h3>изменить пользователя</h3>
+<h3>Изменить рецепт</h3>
 <EditForm Model="recipe" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -13,18 +13,37 @@
         <label for="name">Название:</label>
         <InputText id="name" class="form-control" @bind-Value="recipe.Title" />
         <ValidationMessage For="@(() => recipe.Title)" />
-    </div>  
-@*     <div class="form-group">
-        <label for="name">Название:</label>
-        <InputText id="name" class="form-control" @bind-Value="recipe.Ingredients" />
-        <ValidationMessage For="@(() => recipe.Title)" />
-    </div> *@
+    </div>
+    @foreach (var emp in recipe.Ingredients)
+    {
+        <div>
 
-   
+
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    @emp.Name
+                </button>
+                <ul class="dropdown-menu">
+                    @foreach (var pr in products)
+                    {
+                        <li><a class="dropdown-item" href="#">@pr.Name</a></li>
+
+                    }
+                </ul>
+            </div>
+            <InputText @bind-Value=emp.Count />
+
+        </div>
+        
+    }
 
     <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-    <button type="button" class="btn btn-secondary" @onclick="Cancel">Отменить</button>
+
 </EditForm>
+<Modal @ref="modal" />
+
+    <button type="button" class="btn btn-secondary" @onclick="Cancel">Отменить</button>
+<button type="submit" class="btn btn-primary" @onclick="ShowProduct">Добавить продукт</button>
 
 @code {
 
@@ -32,27 +51,39 @@
     public int RecipeId { get; set; }
 
     private RecipeOutputModel recipe = new RecipeOutputModel();
+    private List<BaseProductForRecipeOutputModel> products { get; set; }
+
+    private Modal modal = new ();
 
     private AdminRecipeManager recipeManager = new AdminRecipeManager();
 
     protected override async Task OnInitializedAsync()
     {
         recipe = await recipeManager.GetRecipeByIdAsync(RecipeId);
+        products = await recipeManager.GetAllProductsAsync();
     }
 
 
     private void HandleValidSubmit() //(обработка )
     {
 
-        NavigationManager.NavigateTo("/recipe-list-page");
+        NavigationManager.NavigateTo("/recipes-list-page");
     }
 
-    //TO DO (не перенаправляет)
     private void Cancel()
     {
 
-        NavigationManager.NavigateTo("/recipe-list-page");
+        NavigationManager.NavigateTo("/recipes-list-page");
+    }
+
+
+    private async Task ShowProduct()
+    {
+        var parameters = new Dictionary<string, object>();
+        parameters.Add("EmployeeId", 321);
+        await modal.ShowAsync<AddIngridirntsInRecipe>(title: "");
     }
 }
+  
 
-}
+

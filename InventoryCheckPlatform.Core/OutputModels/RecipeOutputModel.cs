@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InventoryCheckPlatform.Core.InputModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace InventoryCheckPlatform.Core.OutputModels
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public List<BaseProductOutputModel> Ingredients { get; set; } = new List<BaseProductOutputModel>();  
+        public List<BaseProductForRecipeInputModel> Ingredients { get; set; } = new List<BaseProductForRecipeInputModel>();  
 
     }
 }
