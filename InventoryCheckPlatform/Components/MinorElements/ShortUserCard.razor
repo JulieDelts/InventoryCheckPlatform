@@ -1,7 +1,7 @@
 ﻿@rendermode RenderMode.InteractiveServer
 
 <div class="card">
-    @if (User.FileName != null)
+    @if (User.FileName != null && User.FileName != "")
     {
         <img src="@CreateFullPath(User.FileName)" alt="Фото пользователя" width="170" height="100">
     }
@@ -17,7 +17,7 @@
         {
             <p class="card-text">Идентификатор ресторана: @User.RestaurantId</p>
         }
-        <button class="btn" type="button" @onclick="ShowProductComponent">
+        <button class="btn" type="button" @onclick="ShowFullUser">
             Открыть профиль
         </button>
         </div>
@@ -33,7 +33,7 @@
 
     private Modal modal;
     
-    private async Task ShowProductComponent()
+    private async Task ShowFullUser()
     {
         var parameters = new Dictionary<string, object>
         {

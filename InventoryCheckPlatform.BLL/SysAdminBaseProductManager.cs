@@ -1,110 +1,122 @@
-﻿using InventoryCheckPlatform.Core.InputModels;
+﻿using AutoMapper;
+using InventoryCheckPlatform.BLL.Mappings;
+using InventoryCheckPlatform.Core.DTOs;
+using InventoryCheckPlatform.Core.InputModels;
 using InventoryCheckPlatform.Core.OutputModels;
+using InventoryCheckPlatform.DAL;
 
 namespace InventoryCheckPlatform.BLL
 {
     public class SysAdminBaseProductManager
     {
-        //TODO
-        public List<BaseProductOutputModel> GetAllBaseProducts()
-        {
-            return new List<BaseProductOutputModel>
-            {
-                new BaseProductOutputModel()
-                {
-                    Id= 1,
-                    Name="банан",
-                    Category = "фрукт"
+        private BaseProductRepository _baseProductRepository;
 
-                },
-                new BaseProductOutputModel()
+        private Mapper _mapper;
+        public SysAdminBaseProductManager() 
+        {
+            _baseProductRepository = new();
+
+            var config = new MapperConfiguration(
+               cfg =>
+               {
+                   cfg.AddProfile(new BaseProductMapperProfile());
+               });
+            _mapper = new Mapper(config);
+        } 
+        public async Task<int> AddBaseProduct(BaseProductInputModel product)
+        {
+            try
+            {
+                var baseProductDTO = _mapper.Map<BaseProduct>(product);
+
+                var baseProductId = await _baseProductRepository.AddBaseProduct(baseProductDTO);
+
+                return baseProductId;
+            }
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+
+				return 0;
+			}
+		}
+
+        public async Task <List<BaseProductOutputModel>> GetAllBaseProducts()
+        {
+            var baseProducts = new List<BaseProductOutputModel>();
+
+            try
+            {
+                var baseProductDTOs = await _baseProductRepository.GetAllBaseProducts();
+
+                if (baseProductDTOs.Count > 0)
                 {
-                    Id=2,
-                    Name="картошечка",
-                    Category = "овощ"
-                },
-                new BaseProductOutputModel()
-                {
-                    Id=3,
-                    Name="шампиньончик",
-                    Category = "грибочек"
-                },
-                  new BaseProductOutputModel()
-                {
-                    Id=4,
-                    Name="молоко",
-                    Category = "молочные"
-                },
-                new BaseProductOutputModel()
-                {
-                    Id=5,
-                    Name="сырочек",
-                    Category = "молочные"
-                },
-                new BaseProductOutputModel()
-                {
-                    Id=6,
-                    Name="хлебушке",
-                    Category = "мучное"
-                },
-                new BaseProductOutputModel()
-                {
-                    Id=7,
-                    Name="ананасик",
-                    Category = "фрукт"
-                },
-                new BaseProductOutputModel()
-                {
-                    Id=8,
-                    Name="лосось",
-                    Category = "рыбное"
-                },
-                new BaseProductOutputModel()
-                {
-                    Id=9,
-                    Name="говядина",
-                    Category = "мясное"
-                },
-                new BaseProductOutputModel()
-                {
-                    Id=10,
-                    Name="джин",
-                    Category = "алкоголь"
+                    foreach (var baseProductDTO in baseProductDTOs)
+                    {
+                        var baseProduct = _mapper.Map<BaseProductOutputModel>(baseProductDTO);
+
+                        baseProducts.Add(baseProduct);
+                    }
                 }
-            };
-        }
-
-        //TODO
-        public BaseProductOutputModel GetBaseProductById(int id)
-        {
-            return new BaseProductOutputModel()
+            }
+            catch (Exception ex)
             {
-                Id = id,
-                Name = "малина",
-                Category = "ягоды"
-            };
-        }
+                Console.WriteLine(ex);
+            }
 
-        //TODO
-        public int AddNewBaseProduct(BaseProductInputModel product)
+			return baseProducts;
+        }
+       
+        public async Task<BaseProductOutputModel> GetBaseProductById(int id)
         {
-            int id = 0;//обращаемся к методу дал
+            try
+            {
+                var baseProductDTO = await _baseProductRepository.GetBaseProductById(id);
 
-            return id;
-        }
+                var baseProductResponse = _mapper.Map<BaseProductOutputModel>(baseProductDTO);
 
-        //TODO
-        public int UpdateBaseProduct(BaseProductInputModel product)
+                return baseProductResponse;
+            }
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+
+				return new BaseProductOutputModel();
+			}
+		}
+
+        public async Task<int> UpdateBaseProduct(ExtendedBaseProductInputModel product)
         {
-            int id = 0;//обращаемся к методу дал
+            try
+            {
+                var baseProductDTO = _mapper.Map<BaseProduct>(product);
 
-            return id;
-        }
+                var id = await _baseProductRepository.UpdateBaseProduct(baseProductDTO);
 
-        //TODO
-        public void DeleteBaseProduct(int id)
+                return id;
+            }
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+
+				return 0;
+			}
+		}
+
+        public async Task<int> DeleteBaseProduct(int id)
         {
-            //обращаемся к методу дал
-        }
+            try
+            {
+                int baseProductId = await _baseProductRepository.DeleteBaseProduct(id);
+
+                return baseProductId;
+            }
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+
+				return 0;
+			}
+		}
     }
 }

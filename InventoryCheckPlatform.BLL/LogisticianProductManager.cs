@@ -1,121 +1,128 @@
-﻿
+﻿using AutoMapper;
+using InventoryCheckPlatform.BLL.Mappings;
+using InventoryCheckPlatform.Core.DTOs;
 using InventoryCheckPlatform.Core.InputModels;
 using InventoryCheckPlatform.Core.OutputModels;
+using InventoryCheckPlatform.DAL;
 
 namespace InventoryCheckPlatform.BLL
 {
     public class LogisticianProductManager
     {
-        //TODO
-        public List<SpecificProductOutputModel> GetAllSpecificProducts()
+        private LogisticianSpecificProductRepository _specificProductRepository;
+
+        private BaseProductRepository _baseProductRepository;
+
+        private Mapper _mapper;
+        public LogisticianProductManager()
         {
-            return new List<SpecificProductOutputModel>
+            _specificProductRepository = new();
+
+            _baseProductRepository = new();
+
+            var config = new MapperConfiguration(
+               cfg =>
+               {
+                   cfg.AddProfile(new SpecificProductMapperProfile());
+                   cfg.AddProfile(new BaseProductMapperProfile());
+               });
+            _mapper = new Mapper(config);
+        } 
+        
+        public async Task<int> AddSpecificProduct(SpecificProductInputModel product)
+        {
+            try
             {
-                new SpecificProductOutputModel()
-                {
-                    Id= 1,
-                    Name="банан",
-                    Vendor = "Макака",
-                    Price = 25
-                },
-                new SpecificProductOutputModel()
-                {
-                    Id=2,
-                    Name="картошечка",
-                    Vendor = "Лукаш",
-                    Price = 7
-                },
-                new SpecificProductOutputModel()
-                {
-                    Id=3,
-                    Name="шампиньончик",
-                    Vendor = "Лесочек",
-                    Price = 5
-                },
-                  new SpecificProductOutputModel()
-                {
-                    Id=4,
-                    Name="молоко",
-                    Vendor = "Коровка веселая",
-                    Price = 70
-                },
-                new SpecificProductOutputModel()
-                {
-                    Id=5,
-                    Name="сырочек",
-                    Vendor = "Бобик",
-                    Price = 38
-                },
-                new SpecificProductOutputModel()
-                {
-                    Id=6,
-                    Name="хлебушке",
-                    Vendor = "Крестьяне уставшие",
-                    Price = 40,
-                },
-                new SpecificProductOutputModel()
-                {
-                    Id=7,
-                    Name="ананасик",
-                    Vendor = "Барбос",
-                    Price = 120,
-                },
-                new SpecificProductOutputModel()
-                {
-                    Id=8,
-                    Name="лосось",
-                    Vendor = "Ктулху",
-                    Price = 200,
-                },
-                new SpecificProductOutputModel()
-                {
-                    Id=9,
-                    Name="говядина",
-                    Vendor = "Ваша жопа",
-                    Price = 300
-                },
-                new SpecificProductOutputModel()
-                {
-                    Id=10,
-                    Name="джин",
-                    Vendor = "ОАО Помощь депрессивным",
-                    Price = 500
+                var specificProductDTO = _mapper.Map<SpecificProduct>(product);
+
+                var specificProductId = await _specificProductRepository.AddSpecificProduct(specificProductDTO);
+
+                return specificProductId;
+            }
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+
+				return 0;
+			}
+		}
+
+        public async Task<List<SpecificProductOutputModel>> GetAllSpecificProducts()
+        {
+            var specificProducts = new List<SpecificProductOutputModel>();
+
+            try
+            {
+                var specificProductDTOs = await _specificProductRepository.GetAllSpecificProducts();
+
+                if (specificProductDTOs.Count > 0) {
+
+                    foreach (var specificProductDTO in specificProductDTOs)
+                    {
+                        var specificProduct = _mapper.Map<SpecificProductOutputModel>(specificProductDTO);
+
+                        specificProducts.Add(specificProduct);
+                    }
                 }
-            };
+            }
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+			}
+
+			return specificProducts;
         }
 
-        //TODO
-        public SpecificProductOutputModel GetSpecificProductById(int id)
+        public async Task<SpecificProductOutputModel> GetSpecificProductById(int id)
         {
-            return new SpecificProductOutputModel()
+            try
             {
-                Id = id,
-                Name = "джин",
-                Vendor = "ОАО Помощь депрессивным",
-                Price = 500
-            };
-        }
+                var baseProductDTO = await _specificProductRepository.GetSpecificProductById(id);
 
-        //TODO
-        public int AddNewSpecificProduct(SpecificProductInputModel product)
+                var baseProductResponse = _mapper.Map<SpecificProductOutputModel>(baseProductDTO);
+
+                return baseProductResponse;
+            }
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+
+				return new SpecificProductOutputModel();
+			}
+		}
+
+        public async Task<int> UpdateSpecificProduct(ExtendedSpecificProductInputModel product)
         {
-            int id = 0;//обращаемся к методу дал
+            try
+            {
+                var specificProductDTO = _mapper.Map<SpecificProduct>(product);
 
-            return id;
-        }
+                var id = await _specificProductRepository.UpdateSpecificProduct(specificProductDTO);
 
-        //TODO
-        public int UpdateSpecificProduct(SpecificProductInputModel product)
+                return id;
+            }
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+
+				return 0;
+			}
+		}
+
+        public async Task<int> DeleteSpecificProduct(int id)
         {
-            int id = 0;//обращаемся к методу дал
+            try
+            {
+                int specificProductId = await _specificProductRepository.DeleteSpecificProduct(id);
 
-            return id;
-        }
+                return specificProductId;
+            }
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
 
-        //TODO
-        public void DeleteSpecificProduct(int id)
-        {
-            //обращаемся к методу дал
-        }
+				return 0;
+			}
+		}
     }
 }

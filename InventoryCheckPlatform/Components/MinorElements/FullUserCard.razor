@@ -2,7 +2,7 @@
 @inject NavigationManager NavigationManager
 @inject IConfiguration config
 
-@if (_user.FileName != null)
+@if (_user.FileName != null && _user.FileName != "")
 {
     <img src="@CreateFullPath(_user.FileName)" alt="Фото пользователя" width="170" height="100">
 }

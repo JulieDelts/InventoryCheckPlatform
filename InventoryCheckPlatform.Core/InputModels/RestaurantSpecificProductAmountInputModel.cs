@@ -1,5 +1,4 @@
 ﻿
-using InventoryCheckPlatform.Core.DTOs;
 
 namespace InventoryCheckPlatform.Core.InputModels
 {

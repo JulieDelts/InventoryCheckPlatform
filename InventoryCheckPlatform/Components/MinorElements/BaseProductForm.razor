@@ -35,11 +35,15 @@
 {
     private BaseProductInputModel _baseProduct;
 
+    private SysAdminBaseProductManager _manager;
+
     private IBrowserFile? file;
 
     public BaseProductForm()
     {
         _baseProduct = new();
+
+        _manager = new();
     }
 
     private async Task Submit()
@@ -47,7 +51,8 @@
         var relativePath = await CaptureFile();
         _baseProduct.FileName = relativePath;
 
-        Console.WriteLine($"Добавилось!");
+        await _manager.AddBaseProduct(_baseProduct);
+
         Refresh();
     }
 

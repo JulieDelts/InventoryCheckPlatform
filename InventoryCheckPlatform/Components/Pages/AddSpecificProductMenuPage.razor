@@ -1,28 +1,25 @@
 ﻿@page "/add-specific-product"
 @attribute [StreamRendering]
-@attribute [Authorize(Roles = "администратор")]
+@attribute [Authorize(Roles = "логист")]
 @rendermode RenderMode.InteractiveServer
 
 <SpecificProductForm />
 	
 <h5>Доступные базовые продукты</h5>
-<Grid TItem="SpecificProductOutputModel"
+<Grid TItem="BaseProductOutputModel"
       Class="table table-hover table-bordered table-striped"
       DataProvider="ProductsDataProvider"
       AllowSorting="true"
       Responsive="true">
     <GridColumns>
-        <GridColumn TItem="SpecificProductOutputModel" HeaderText="Id" PropertyName="Id" SortKeySelector="item => item.Id">
+        <GridColumn TItem="BaseProductOutputModel" HeaderText="Id" PropertyName="Id" SortKeySelector="item => item.Id">
             @context.Id
         </GridColumn>
-        <GridColumn TItem="SpecificProductOutputModel" HeaderText="Название" PropertyName="Name" SortKeySelector="item => item.Name">
+        <GridColumn TItem="BaseProductOutputModel" HeaderText="Название" PropertyName="Название" SortKeySelector="item => item.Name">
             @context.Name
         </GridColumn>
-        <GridColumn TItem="SpecificProductOutputModel" HeaderText="Поставщик" PropertyName="Vendor" SortKeySelector="item => item.Vendor">
-            @context.Vendor
-        </GridColumn>
-        <GridColumn TItem="SpecificProductOutputModel" HeaderText="Цена за штуку" PropertyName="Price" SortKeySelector="item => item.Price">
-            @context.Price
+        <GridColumn TItem="BaseProductOutputModel" HeaderText="Поставщик" PropertyName="Категория" SortKeySelector="item => item.Category">
+            @context.Category
         </GridColumn>
     </GridColumns>
 </Grid>
@@ -30,7 +27,7 @@
 
 
 @code {
-    private List<SpecificProductOutputModel> _specificProducts = default!;
+    private List<BaseProductOutputModel> _baseProducts = default!;
 
     private LogisticianProductManager _logisticianProductManager;
 
@@ -43,17 +40,16 @@
         _sysAdminProductManager = new();
     }
 
-    private async Task<GridDataProviderResult<SpecificProductOutputModel>> ProductsDataProvider(GridDataProviderRequest<SpecificProductOutputModel> request)
+    private async Task<GridDataProviderResult<BaseProductOutputModel>> ProductsDataProvider(GridDataProviderRequest<BaseProductOutputModel> request)
     {
-        if (_specificProducts is null)
-            _specificProducts = GetSpecificProducts();
+        if (_baseProducts is null)
+            _baseProducts = await GetSpecificProducts();
 
-        return await Task.FromResult(request.ApplyTo(_specificProducts));
+        return await Task.FromResult(request.ApplyTo(_baseProducts));
     }
 
-    private List<SpecificProductOutputModel> GetSpecificProducts()
+    private async Task<List<BaseProductOutputModel>> GetSpecificProducts()
     {
-        return _logisticianProductManager.GetAllSpecificProducts();
+        return await _sysAdminProductManager.GetAllBaseProducts();
     }
-
 }

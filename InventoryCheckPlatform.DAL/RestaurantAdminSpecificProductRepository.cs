@@ -52,6 +52,24 @@ namespace InventoryCheckPlatform.DAL
 
         public async Task AddSpecificProductsToRestaurant(List<RestaurantSpecificProductAmount> productAmounts)
         {
+            if (productAmounts.Count > 0)
+            {
+                for (int i = 0; i < productAmounts.Count; i++)
+                {
+                    var specificProduct = await _context.SpecificProduct.Where(pa => pa.Id == productAmounts[i].SpecificProduct.Id).FirstOrDefaultAsync();
+                    var restaurant = await _context.Restaurant.Where(r => r.Id == productAmounts[i].Restaurant.Id).FirstOrDefaultAsync();
+
+                    if (specificProduct != null && restaurant != null)
+                    {
+                        productAmounts[i].SpecificProduct = specificProduct;
+                        productAmounts[i].Restaurant = restaurant;
+                    }
+                    else
+                    {
+                        throw new Exception("The entities are not found.");
+                    }
+                }
+            }
             _context.RestaurantSpecificProductAmount.AddRange(productAmounts);
             await _context.SaveChangesAsync();
         }

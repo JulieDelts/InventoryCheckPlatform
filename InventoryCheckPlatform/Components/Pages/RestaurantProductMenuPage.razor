@@ -1,17 +1,31 @@
-﻿@page "/product-menu-page"
+﻿@page "/rest-product-menu-page/{restaurantId:int}"
 @attribute [StreamRendering]
-@attribute [Authorize(Roles = " системный администратор")]
+@attribute [Authorize(Roles = "администратор ресторана, логист")]
 @using static InventoryCheckPlatform.Components.MinorElements.CardPagination
 @rendermode RenderMode.InteractiveServer
 
- <BaseProductForm />
+<AuthorizeView Roles="администратор ресторана">
+    <Authorized>
+		<div class="col-md-12 text-center">
+			<a href=@($"/select-products/{restaurantId}")>Добавить продукты для ресторана</a>
+		</div>
+	</Authorized>
+</AuthorizeView>
+
+<AuthorizeView Roles="логист">
+    <Authorized>
+		<div class="col-md-12 text-center">
+			<a href=@("")>Заказать продукты для ресторана</a>
+		</div>
+	</Authorized>
+</AuthorizeView>
 
 @if (_products.Count > 0)
 {
 	<div class="card-holder">
 		@for (int i = _paginationStart; i <= _paginationEnd; i++)
 		{
-			<BaseProductCard Product="@_products[i]" />
+            <RestaurantSpecificProductCard SpecificProductAmount="@_products[i]" RestaurantId="restaurantId"/>
 		}
 	</div>
 }
@@ -28,9 +42,12 @@ else
 
 @code
 {
-    private List<BaseProductOutputModel> _products;
+    [Parameter]
+    public int restaurantId { get; set; }
 
-    private SysAdminBaseProductManager _manager;
+    private List<RestaurantSpecificProductAmountOutputModel> _products;
+
+    private RestaurantAdminProductManager _manager;
 
     private int _numberOfItemsPerPage;
 
@@ -38,16 +55,28 @@ else
 
     private int _paginationEnd;
 
-    public SysAdminBaseProductMenuPage()
+    public RestaurantProductMenuPage()
     {
         _manager = new();
         _products = new();
         _numberOfItemsPerPage = 6;
+
+        if (_products.Count < _numberOfItemsPerPage)
+        {
+            _paginationStart = 0;
+            _paginationEnd = _products.Count - 1;
+        }
+        else
+        {
+
+            _paginationStart = 0;
+            _paginationEnd = _numberOfItemsPerPage;
+        }
     }
 
     protected override async Task OnInitializedAsync()
     {
-        _products = await _manager.GetAllBaseProducts();
+        _products = await _manager.GetAllSpecificProductsWithAmount(restaurantId);
 
         if (_products.Count < _numberOfItemsPerPage)
         {
