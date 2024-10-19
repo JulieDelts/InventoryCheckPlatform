@@ -9,6 +9,7 @@ namespace InventoryCheckPlatform.DAL
     {
         private InventoryCheckContext _context;
 
+
         public UserRepository()
         {
             _context = new InventoryCheckContext();
@@ -37,7 +38,7 @@ namespace InventoryCheckPlatform.DAL
         }
 
         public async Task<List<User>> GetAllUsers()
-        {
+        {     
             var users = await _context.User.Include(u => u.Restaurant).ToListAsync();
 
             if (users != null)
@@ -77,5 +78,7 @@ namespace InventoryCheckPlatform.DAL
 
             return userToDelete.Id;
         }
+
+
     }
 }

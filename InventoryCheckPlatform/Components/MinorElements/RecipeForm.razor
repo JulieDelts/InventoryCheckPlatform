@@ -1,0 +1,110 @@
+﻿@page "/recipe-form"
+@rendermode RenderMode.InteractiveServer
+@inject IConfiguration config
+@inject AdminRecipeManager _productService
+
+<EditForm Model="@recipeInput" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+   
+    <div class="mb-3 text-center">
+        <label class="form-label">Название:<span class="text-danger">*</span></label>
+        <InputText @bind-Value="recipeInput.Title" class="form-control" />
+    </div>
+
+  
+    <div class="mb-3 text-center">
+        <label class="form-label">Файл рецепта (изображение или документ):</label>
+        <InputText @bind-Value="recipeInput.FileName" class="form-control" placeholder="Выберите файл" />
+    </div>
+
+    <!-- Выпадающий список для выбора продукта -->
+    <div class="mb-3 text-center">
+        <label class="form-label">Продукт:</label>
+        <Dropdown Color="DropdownColor.Secondary">
+            <DropdownToggleButton tabindex="@tabindex">
+                @(selectedProduct?.Name ?? "Выберите продукт")
+            </DropdownToggleButton>
+            <DropdownMenu>
+                @foreach (var product in products)
+                {
+                    <DropdownItem Type="DropdownItemType.Link" @onclick="() => SelectProduct(product)">
+                        @product.Name
+                    </DropdownItem>
+                }
+            </DropdownMenu>
+        </Dropdown>
+    </div>
+
+    <!-- Список ингредиентов -->
+    <div class="mb-3 text-center">
+        <label class="form-label">Ингредиенты:</label>
+        <ul>
+            @foreach (var ingredient in recipeInput.Ingredients)
+            {
+                <li>@ingredient.Name</li>
+            }
+        </ul>
+        <Dropdown Color="DropdownColor.Secondary">
+            <DropdownToggleButton tabindex="@tabindex">
+                Добавить ингредиент
+            </DropdownToggleButton>
+            <DropdownMenu>
+                @foreach (var product in products)
+                {
+                    <DropdownItem Type="DropdownItemType.Link" @onclick="() => AddIngredient(product)">
+                        @product.Name
+                    </DropdownItem>
+                }
+            </DropdownMenu>
+        </Dropdown>
+    </div>
+
+    <!-- Кнопка отправки формы -->
+    <div class="mb-3 text-center">
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </div>
+</EditForm>
+
+@code {
+    // Модель для формы рецепта
+    private RecipeInputModel recipeInput = new();
+
+    // Список продуктов для выпадающего списка
+    private List<BaseProductForRecipeOutputModel> products = new();
+
+    // Выбранный продукт
+    private BaseProductForRecipeInputModel? selectedProduct;
+
+  
+    private int tabindex = 0;
+
+  
+    protected override async Task OnInitializedAsync()
+    {
+      
+        products = await _productService.GetAllProductsAsync();
+    }
+
+    // Метод для выбора продукта
+    private void SelectProduct(BaseProductForRecipeInputModel product)
+    {
+        selectedProduct = product;
+        selectedProduct. = product.Id; // Привязка выбранного продукта
+    }
+
+    // Метод для добавления ингредиента в список
+    private void AddIngredient(BaseProductForRecipeInputModel product)
+    {
+        var ingredient = new BaseProductForRecipeInputModel { Id = product.Id, Name = product.Name };
+        recipeInput.Ingredients.Add(ingredient);
+    }
+
+   
+    private void HandleValidSubmit()
+    {
+        // Логика для обработки данных формы при отправке
+        Console.WriteLine($"Название рецепта: {recipeInput.Title}, Файл: {recipeInput.FileName}, Ингредиенты: {string.Join(", ", recipeInput.Ingredients.Select(i => i.Name))}");
+    }
+}

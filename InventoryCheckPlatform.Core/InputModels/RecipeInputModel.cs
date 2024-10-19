@@ -13,6 +13,6 @@ namespace InventoryCheckPlatform.Core.InputModels
 
         [CustomFileExtensionValidation]
         public string FileName { get; set; }
-        public List<BaseProductInputModel> Ingredients { get; set; } = new List<BaseProductInputModel>();
+        public List<BaseProductForRecipeInputModel> Ingredients { get; set; } = new List<BaseProductForRecipeInputModel>();
     }
 }
