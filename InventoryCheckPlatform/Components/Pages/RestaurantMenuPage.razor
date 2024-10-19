@@ -1,10 +1,14 @@
 ﻿@page "/restaurants-menu-page"
 @attribute [StreamRendering]
-@attribute [Authorize(Roles = "администратор")]
+@attribute [Authorize(Roles = "системный администратор, логист")]
 @using static InventoryCheckPlatform.Components.MinorElements.CardPagination
 @rendermode RenderMode.InteractiveServer
 
-<RestaurantForm />
+<AuthorizeView Roles="системный администратор">
+        <Authorized>
+            <RestaurantForm />
+        </Authorized>
+</AuthorizeView>
 
 @if (_restaurants.Count > 0)
 {
@@ -38,11 +42,18 @@ else
 
     private int _paginationEnd;
 
-    public SysAdminRestaurantMenuPage()
+    public RestaurantMenuPage()
     {
         _manager = new();
-        _restaurants = _manager.GetAllRestaurants();
+
+        _restaurants = new();
+
         _numberOfItemsPerPage = 6;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _restaurants = await _manager.GetAllRestaurants();
 
         if (_restaurants.Count < _numberOfItemsPerPage)
         {
@@ -51,10 +62,11 @@ else
         }
         else
         {
-
             _paginationStart = 0;
             _paginationEnd = _numberOfItemsPerPage;
         }
+
+        await base.OnInitializedAsync();
     }
 
     private void SetPagination(PaginationEventArgs e)

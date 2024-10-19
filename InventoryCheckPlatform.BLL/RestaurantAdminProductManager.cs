@@ -1,143 +1,127 @@
-﻿using InventoryCheckPlatform.Core.InputModels;
+﻿using AutoMapper;
+using InventoryCheckPlatform.BLL.Mappings;
+using InventoryCheckPlatform.Core.DTOs;
+using InventoryCheckPlatform.Core.InputModels;
 using InventoryCheckPlatform.Core.OutputModels;
+using InventoryCheckPlatform.DAL;
 
 namespace InventoryCheckPlatform.BLL
 {
     public class RestaurantAdminProductManager
     {
-        //TODO
-        public List<SpecificProductOutputModelWithAmount> GetAllSpecificProductsWithAmount()
-        {
-            return new List<SpecificProductOutputModelWithAmount>
-            {
-                new SpecificProductOutputModelWithAmount()
-                {
-                    Id= 1,
-                    Name="банан",
-                    Category = "фрукт",
-                    Vendor = "Макака",
-                    Price = 25,
-                    Amount = 30
-                },
-                new SpecificProductOutputModelWithAmount()
-                {
-                    Id=2,
-                    Name="картошечка",
-                    Category = "овощ",
-                    Vendor = "Лукаш",
-                    Price = 7,
-                    Amount = 500
-                },
-                new SpecificProductOutputModelWithAmount()
-                {
-                    Id=3,
-                    Name="шампиньончик",
-                    Category = "грибочек",
-                    Vendor = "Лесочек",
-                    Price = 5,
-                    Amount = 47
+        private Mapper _mapper;
 
-                },
-                  new SpecificProductOutputModelWithAmount()
+        private RestaurantAdminSpecificProductRepository _specificProductAmountRepository;
+
+        public RestaurantAdminProductManager()
+        {
+            _specificProductAmountRepository = new();
+
+            var config = new MapperConfiguration(
+               cfg =>
+               {
+                   cfg.AddProfile(new SpecificProductMapperProfile());
+                   cfg.AddProfile(new RestaurantMapperProfile());
+               });
+            _mapper = new Mapper(config);
+        }
+
+        public async Task AddSpecificProductsToRestaurant(List<RestaurantSpecificProductAmountInputModel> productAmounts)
+        {
+            var productAmountDTOs = new List<RestaurantSpecificProductAmount>();
+
+            try
+            {
+                if (productAmounts.Count > 0)
                 {
-                    Id=4,
-                    Name="молоко",
-                    Category = "молочные",
-                    Vendor = "Коровка веселая",
-                    Price = 70,
-                    Amount = 39
-                },
-                new SpecificProductOutputModelWithAmount()
-                {
-                    Id=5,
-                    Name="сырочек",
-                    Category = "молочные",
-                    Vendor = "Бобик",
-                    Price = 38,
-                    Amount = 48
-                },
-                new SpecificProductOutputModelWithAmount()
-                {
-                    Id=6,
-                    Name="хлебушке",
-                    Category = "мучное",
-                    Vendor = "Крестьяне уставшие",
-                    Price = 40,
-                    Amount = 56
-                },
-                new SpecificProductOutputModelWithAmount()
-                {
-                    Id=7,
-                    Name="ананасик",
-                    Category = "фрукт",
-                    Vendor = "Барбос",
-                    Price = 120,
-                    Amount = 20
-                },
-                new SpecificProductOutputModelWithAmount()
-                {
-                    Id=8,
-                    Name="лосось",
-                    Category = "рыбное",
-                    Vendor = "Ктулху",
-                    Price = 200,
-                    Amount = 74
-                },
-                new SpecificProductOutputModelWithAmount()
-                {
-                    Id=9,
-                    Name="говядина",
-                    Category = "мясное",
-                    Vendor = "Ваша жопа",
-                    Price = 300,
-                    Amount = 23
-                },
-                new SpecificProductOutputModelWithAmount()
-                {
-                    Id=10,
-                    Name="джин",
-                    Category = "алкоголь",
-                    Vendor = "ОАО Помощь депрессивным",
-                    Price = 500,
-                    Amount = 29
+                    foreach (var productAmount in productAmounts)
+                    {
+                        var productAmountDTO = _mapper.Map<RestaurantSpecificProductAmount>(productAmount);
+
+                        productAmountDTOs.Add(productAmountDTO);
+                    }
                 }
-            };
-        }
 
-        //TODO
-        public SpecificProductOutputModelWithAmount GetSpecificProductById(int id)
-        {
-            return new SpecificProductOutputModelWithAmount()
+                await _specificProductAmountRepository.AddSpecificProductsToRestaurant(productAmountDTOs);
+
+            }
+            catch(Exception ex) 
             {
-                Id = id,
-                Name = "джин",
-                Category = "алкоголь",
-                Vendor = "ОАО Помощь депрессивным",
-                Price = 500,
-                Amount = 29
-            };
+                Console.WriteLine(ex);
+            }
         }
 
-        //TODO
-        public int AddNewSpecificProduct(ExtendedSpecificProductInputModelWithAmount product)
+        public async Task <List<RestaurantSpecificProductAmountOutputModel>> GetAllSpecificProductsWithAmount(int restaurantId)
         {
-            int id = 0;//обращаемся к методу дал
+            var specificProductsWithAmount = new List<RestaurantSpecificProductAmountOutputModel>();
 
-            return id;
+            try
+            {
+                var specificProductDTOsWithAmount = await _specificProductAmountRepository.GetAllSpecificProductsByRestaurantId(restaurantId);
+
+                if (specificProductDTOsWithAmount.Count > 0)
+                {
+                    foreach (var specificProductDTOWithAmount in specificProductDTOsWithAmount)
+                    {
+                        var specificProductWithAmount = _mapper.Map<RestaurantSpecificProductAmountOutputModel>(specificProductDTOWithAmount);
+
+                        specificProductsWithAmount.Add(specificProductWithAmount);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            return specificProductsWithAmount;
         }
 
-        //TODO
-        public int UpdateSpecificProduct(ExtendedSpecificProductInputModelWithAmount product)
+        public async Task<RestaurantSpecificProductAmountOutputModel> GetSpecificProductAmountById(int restaurantId, int productId)
         {
-            int id = 0;//обращаемся к методу дал
+            try
+            {
+                var specificProductAmountDTO = await _specificProductAmountRepository.GetSpecificProductWithAmountById(restaurantId, productId);
 
-            return id;
+                var specificProductAmount = _mapper.Map<RestaurantSpecificProductAmountOutputModel>(specificProductAmountDTO);
+
+                return specificProductAmount;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+
+                return new RestaurantSpecificProductAmountOutputModel();
+            }
         }
 
-        //TODO
-        public void DeleteSpecificProduct(int id)
+        public async Task UpdateSpecificProductAmount(RestaurantSpecificProductAmountInputModel productAmount)
         {
-            //обращаемся к методу дал
+            try
+            {
+                var specificProductAmountDTO = _mapper.Map<RestaurantSpecificProductAmount>(productAmount);
+
+                await _specificProductAmountRepository.UpdateSpecificProductAmount(specificProductAmountDTO);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+        
+        public async Task DeleteSpecificProduct(RestaurantSpecificProductAmountInputModel productAmount)
+        {
+            try
+            {
+                var specificProductAmountDTO = _mapper.Map<RestaurantSpecificProductAmount>(productAmount);
+
+                await _specificProductAmountRepository.DeleteSpecificProduct(specificProductAmountDTO);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 }

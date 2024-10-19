@@ -14,10 +14,6 @@
                 <InputText @bind-Value="_restaurant.Address" class="form-control" />
             </div>
             <div class="mb-3 text-center">
-                <label class="form-label">Идентификатор администратора:<span class="text-danger">*</span></label>
-                <InputNumber @bind-Value="_restaurant.AdminId" class="form-control" />
-            </div>
-            <div class="mb-3 text-center">
                 <label class="form-label">Изображение:</label>
                 <InputFile OnChange="@LoadFile" accept=".png,.jpg,.jpeg" class="form-control"></InputFile>
             </div>
@@ -35,11 +31,15 @@
 {
     private RestaurantInputModel _restaurant;
 
+    private SysAdminRestaurantManager _restaurantManager;
+
     private IBrowserFile? file;
 
     public RestaurantForm()
     {
         _restaurant = new();
+
+        _restaurantManager = new();
     }
 
     private async Task Submit()
@@ -47,7 +47,8 @@
         var relativePath = await CaptureFile();
         _restaurant.FileName = relativePath;
 
-        Console.WriteLine($"Добавилось!");
+        await _restaurantManager.AddRestaurant(_restaurant);
+
         Refresh();
     }
 

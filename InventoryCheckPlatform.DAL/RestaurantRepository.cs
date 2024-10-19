@@ -15,6 +15,7 @@ namespace InventoryCheckPlatform.DAL
         public async Task<int> AddRestaurant(Restaurant restaurant)
         {
             _context.Restaurant.Add(restaurant);
+
             await _context.SaveChangesAsync();
 
             return restaurant.Id;
@@ -22,7 +23,7 @@ namespace InventoryCheckPlatform.DAL
 
         public async Task<Restaurant> GetRestaurantById(int id)
         {
-            var restaurant = await _context.Restaurant.Where(s => s.Id == id).Include(r => r.RestaurantSpecificProductAmounts).ThenInclude(p => p.SpecificProduct).Include(r => r.Admin).FirstOrDefaultAsync();
+            var restaurant = await _context.Restaurant.Where(s => s.Id == id).Include(r => r.RestaurantSpecificProductAmounts).ThenInclude(p => p.SpecificProduct).FirstOrDefaultAsync();
 
             if (restaurant != null)
             {
@@ -34,9 +35,16 @@ namespace InventoryCheckPlatform.DAL
             }
         }
 
+        public async Task<User?> GetAdminByRestaurantId(int id)
+        {
+            var admin = await _context.User.Where(u => u.Role == "администратор ресторана" && u.Restaurant.Id == id).FirstOrDefaultAsync();
+            
+            return admin;
+        }
+
         public async Task<List<Restaurant>> GetAllRestaurants()
         {
-            var restaurants = await _context.Restaurant.Include(r => r.Admin).ToListAsync();
+            var restaurants = await _context.Restaurant.ToListAsync();
 
             if (restaurants != null)
             {
@@ -54,9 +62,8 @@ namespace InventoryCheckPlatform.DAL
 
             restaurantToUpdate.Address = restaurant.Address;
             restaurantToUpdate.FileName = restaurant.FileName;
-            restaurantToUpdate.AdminId = restaurant.AdminId;
 
-             await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return restaurantToUpdate.Id;
         }

@@ -1,6 +1,13 @@
 ﻿@rendermode RenderMode.InteractiveServer
 <div class="card">
-	<img src="667f354d-06ee-42ed-b70b-8a749a3e2969.jpg" class="card-img-top" alt="Пицца">
+	@if (SpecificProduct.FileName != null && SpecificProduct.FileName != "")
+	{
+		<img src="@CreateFullPath(SpecificProduct.FileName)" alt="Фото продукта" width="170" height="100">
+	}
+	else
+	{
+		<img src="Images\\SpecificProductImages\\specific-product-default.png" alt="Фото продукта" width="170" height="100">
+	}
 	<div class="card-body">
 		<h5 class="card-title">@SpecificProduct.Name</h5>
 		<p class=" card-text">Id: @SpecificProduct.Id</p>
@@ -40,5 +47,11 @@
 		var parameters = new Dictionary<string, object>();
 		parameters.Add("ExtendedSpecificProduct", productInputModel);
 		await modal.ShowAsync<SpecificProductModificationForm>(title: "Редактирование продукта", parameters: parameters);
+	}
+
+	private string CreateFullPath(string relativePath)
+	{
+		string path = Path.Combine("Images", relativePath);
+		return path;
 	}
 }

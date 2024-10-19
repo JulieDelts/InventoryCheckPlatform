@@ -1,6 +1,6 @@
 ﻿@page "/logistician-product-menu-page"
 @attribute [StreamRendering]
-@attribute [Authorize(Roles = "администратор")]
+@attribute [Authorize(Roles = "логист")]
 @using static InventoryCheckPlatform.Components.MinorElements.CardPagination
 @rendermode RenderMode.InteractiveServer
 
@@ -11,7 +11,7 @@
 @if (_products.Count > 0)
 {
     <div class="card-holder">
-        @for (int i = _paginationStart; i < _paginationEnd; i++)
+        @for (int i = _paginationStart; i <= _paginationEnd; i++)
         {
             <LogisticianSpecificProductCard SpecificProduct="@_products[i]" />
         }
@@ -43,8 +43,13 @@ else
     public LogisticianProductMenuPage()
     {
         _manager = new();
-        _products = _manager.GetAllSpecificProducts();
+        _products = new();
         _numberOfItemsPerPage = 6;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _products = await _manager.GetAllSpecificProducts();
 
         if (_products.Count < _numberOfItemsPerPage)
         {
@@ -57,6 +62,8 @@ else
             _paginationStart = 0;
             _paginationEnd = _numberOfItemsPerPage;
         }
+
+        await base.OnInitializedAsync();
     }
 
     public void SetPagination(PaginationEventArgs e)

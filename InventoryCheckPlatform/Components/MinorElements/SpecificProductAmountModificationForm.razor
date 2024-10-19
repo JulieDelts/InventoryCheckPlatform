@@ -1,12 +1,12 @@
 ﻿@rendermode RenderMode.InteractiveServer
 
-<EditForm Model="@ExtendedSpecificProductlWithAmount" OnValidSubmit="@Submit">
+<EditForm Model="@SpecificProductlWithAmount" OnValidSubmit="@Submit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="mb-3">
         <label class="form-label">Количество:<span class="text-danger">*</span></label>
-        <InputNumber @bind-Value="ExtendedSpecificProductlWithAmount.Amount" Placeholder="@ExtendedSpecificProductlWithAmount.Amount" class="form-control" />
+        <InputNumber @bind-Value="SpecificProductlWithAmount.ProductAmount" Placeholder="@SpecificProductlWithAmount.ProductAmount" class="form-control" />
         <div class="row">
             <div class="col-md-12 text-center">
                 <button @onclick="Decrement" class="btn btn-secondary">-</button>
@@ -25,25 +25,33 @@
 @code
 {
     [Parameter]
-    public ExtendedSpecificProductInputModelWithAmount ExtendedSpecificProductlWithAmount { get; set; }
+    [EditorRequired]
+    public RestaurantSpecificProductAmountInputModel SpecificProductlWithAmount { get; set; }
 
-    public void Submit()
+    private RestaurantAdminProductManager _manager;
+
+    public SpecificProductAmountModificationForm()
     {
-        Console.WriteLine($"Изменилось!");
+        _manager = new();
+    }
+
+    public async Task Submit()
+    {
+       await _manager.UpdateSpecificProductAmount(SpecificProductlWithAmount);
     }
 
     private void Refresh()
     {
-        ExtendedSpecificProductlWithAmount.Amount = new();
+        SpecificProductlWithAmount.ProductAmount = 0;
     }
 
     private void Increment()
     {
-        ExtendedSpecificProductlWithAmount.Amount++;
+        SpecificProductlWithAmount.ProductAmount++;
     }
 
     private void Decrement()
     {
-        ExtendedSpecificProductlWithAmount.Amount--;
+        SpecificProductlWithAmount.ProductAmount--;
     }
 }

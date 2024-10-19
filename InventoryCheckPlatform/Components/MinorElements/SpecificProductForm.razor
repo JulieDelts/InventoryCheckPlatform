@@ -41,6 +41,8 @@
 
 @code
 {
+    private LogisticianProductManager _manager;
+
     private SpecificProductInputModel _specificProduct;
 
     private IBrowserFile? file;
@@ -48,6 +50,8 @@
     public SpecificProductForm()
     {
         _specificProduct = new();
+
+        _manager = new();
     }
 
     private async Task Submit()
@@ -55,7 +59,7 @@
         var relativePath = await CaptureFile();
         _specificProduct.FileName = relativePath;
 
-        Console.WriteLine($"Добавилось!");
+       await _manager.AddSpecificProduct(_specificProduct);
         Refresh();
     }
 

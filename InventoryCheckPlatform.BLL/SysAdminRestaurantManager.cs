@@ -1,61 +1,147 @@
-﻿using InventoryCheckPlatform.Core.InputModels;
+﻿using AutoMapper;
+using InventoryCheckPlatform.BLL.Mappings;
+using InventoryCheckPlatform.Core.DTOs;
+using InventoryCheckPlatform.Core.InputModels;
 using InventoryCheckPlatform.Core.OutputModels;
+using InventoryCheckPlatform.DAL;
 
 namespace InventoryCheckPlatform.BLL
 {
 	public class SysAdminRestaurantManager
 	{
-		//TODO
-		public List<RestaurantOutputModel> GetAllRestaurants()
+        private Mapper _mapper;
+
+		private RestaurantRepository _restaurantRepository;
+
+        private UserRepository _userRepository;
+
+		public SysAdminRestaurantManager()
 		{
-			return new List<RestaurantOutputModel>
+			_restaurantRepository = new();
+
+            _userRepository = new();
+
+            var config = new MapperConfiguration(
+                cfg =>
+                {
+                    cfg.AddProfile(new RestaurantMapperProfile());
+                    cfg.AddProfile(new UserMapperProfile());
+                });
+            _mapper = new Mapper(config);
+        }
+
+		public async Task<int> AddRestaurant(RestaurantInputModel restaurant)
+		{
+            try
+            {
+                var restaurantDTO = _mapper.Map<Restaurant>(restaurant);
+
+                var restaurantId = await _restaurantRepository.AddRestaurant(restaurantDTO);
+
+                return restaurantId;
+            }
+			catch (Exception ex)
 			{
-				new RestaurantOutputModel()
-				{
-					Id= 1,
-					Address = "г. Мск, ул. Кк, д. 10",
-					Admin = new() { Name = "Вася", Id = 7 }
-				},
-				new RestaurantOutputModel()
-				{
-					Id= 2,
-					Address = "г. Петербург, ул. Дд, д. 11",
-					Admin = new() { Name = "Петя", Id = 2 }
-				}
-			};
+				Console.WriteLine(ex);
+
+				return 0;
+			}
 		}
 
-		//TODO
-		public RestaurantOutputModel GetRestaurantById(int id)
+        public async Task<List<RestaurantOutputModel>> GetAllRestaurants()
 		{
-			return new RestaurantOutputModel()
+            var restaurants = new List<RestaurantOutputModel>();
+
+            try
+            {
+                var restaurantDTOs = await _restaurantRepository.GetAllRestaurants();
+
+                if (restaurantDTOs.Count > 0)
+                {
+                    foreach (var restaurantDTO in restaurantDTOs)
+                    {
+                        var restaurant = _mapper.Map<RestaurantOutputModel>(restaurantDTO);
+
+                        var adminDTO = await _restaurantRepository.GetAdminByRestaurantId(restaurantDTO.Id);
+
+                        if (adminDTO != null)
+                        {
+                            var admin = _mapper.Map<FullUserOutputModel>(adminDTO);
+
+                            restaurant.Admin = admin;
+                        }
+
+                        restaurants.Add(restaurant);
+                    }
+                }
+            } 
+            catch (Exception ex) 
+            {
+                Console.WriteLine(ex);
+            }
+
+            return restaurants;
+        }
+
+        public async Task<RestaurantOutputModel> GetRestaurantById(int id)
+		{
+            try
+            {
+                var restaurantDTO = await _restaurantRepository.GetRestaurantById(id);
+
+                var restaurantResponse = _mapper.Map<RestaurantOutputModel>(restaurantDTO);
+
+                var adminDTO = await _restaurantRepository.GetAdminByRestaurantId(id);
+
+                if (adminDTO != null)
+                {
+                    var admin = _mapper.Map<FullUserOutputModel>(adminDTO);
+
+                    restaurantResponse.Admin = admin;
+                }
+
+                return restaurantResponse;
+            }
+			catch (Exception ex)
 			{
-				Id = 3,
-				Address = "г. Казань, ул. ВВ, д. 13",
-				Admin = new() { Name = "Женя", Id = 4 }
-			};
+				Console.WriteLine(ex);
+
+				return new RestaurantOutputModel();
+			}
 		}
 
-		//TODO
-		public int AddNewRestaurant(RestaurantInputModel restaurant)
+		public async Task<int> UpdateRestaurant(ExtendedRestaurantInputModel updatedRestaurant)
 		{
-			int id = 0;//обращаемся к методу дал
+            try
+            {
+                var restaurantDTO = _mapper.Map<Restaurant>(updatedRestaurant);
 
-			return id;
+                var id = await _restaurantRepository.UpdateRestaurant(restaurantDTO);
+
+                return id;
+            }
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+
+				return 0;
+			}
 		}
 
-		//TODO
-		public int UpdateRestaurant(ExtendedRestaurantInputModel restaurant)
+		public async Task<int> DeleteRestaurant(int id)
 		{
-			int id = 0;//обращаемся к методу дал
+            try
+            {
+                int restaurantId = await _restaurantRepository.DeleteRestaurant(id);
 
-			return id;
-		}
+                return restaurantId;
+            }
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
 
-		//TODO
-		public void DeleteRestaurant(int id)
-		{
-			//обращаемся к методу дал
+				return 0;
+			}
 		}
 	}
 }

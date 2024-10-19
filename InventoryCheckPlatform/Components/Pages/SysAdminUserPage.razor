@@ -1,6 +1,6 @@
 ﻿@page "/user-list-page"
 @attribute [StreamRendering]
-@attribute [Authorize(Roles = "администратор")]
+@attribute [Authorize(Roles = "системный администратор")]
 @rendermode RenderMode.InteractiveServer
 
 <UserForm />
@@ -16,7 +16,7 @@
 }
 else
 {
-    <p>Пользователей нет</p>
+    <p>Пользователей нет.</p>
 }
 
 @code {

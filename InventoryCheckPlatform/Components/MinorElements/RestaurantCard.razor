@@ -1,18 +1,38 @@
 ﻿@rendermode RenderMode.InteractiveServer
+
 <div class="card">
-	<img src="667f354d-06ee-42ed-b70b-8a749a3e2969.jpg" class="card-img-top" alt="Пицца">
+	@if (Restaurant.FileName != null && Restaurant.FileName != "")
+	{
+		<img src="@CreateFullPath(Restaurant.FileName)" alt="Фото ресторана" width="170" height="100">
+	}
+	else
+	{
+		<img src="Images\\RestaurantImages\\restaurant-profile-default.png" alt="Фото ресторана" width="170" height="100">
+	}
 	<div class="card-body">
 		<h5 class="card-title">@Restaurant.Address</h5>
 		<p class=" card-text">Id: @Restaurant.Id</p>
-		<p class="card-text">Администратор: @Restaurant.Admin.Name</p>
-
+		@if (Restaurant.Admin != null)
+		{
+			<p class=" card-text">Id администратора: @Restaurant.Admin.Id</p>
+			<p class=" card-text">Имя администратора: @Restaurant.Admin.Name</p>
+		}
 		<div class="dropdown">
 			<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 				Опции
 			</button>
 			<ul class="dropdown-menu">
-				<li><button class="dropdown-item" type="button" @onclick="ShowForm">Редактировать</button></li>
-				<li><button class="dropdown-item" type="button">Удалить</button></li>
+				<AuthorizeView Roles="системный администратор">
+					<Authorized>
+						<li><button class="dropdown-item" type="button" @onclick="ShowForm">Редактировать</button></li>
+						<li><button class="dropdown-item" type="button">Удалить</button></li>
+					</Authorized>
+				</AuthorizeView>
+				<AuthorizeView Roles="логист">
+					<Authorized>
+						<li><a class="dropdown-item" href="#">Посмотреть продукты</a></li>
+					</Authorized>
+				</AuthorizeView>
 			</ul>
 		</div>
 
@@ -31,9 +51,15 @@
 
 	private async Task ShowForm()
 	{
-		ExtendedRestaurantInputModel restaurantInputModel = new() { Id = Restaurant.Id, Address = Restaurant.Address, AdminId = Restaurant.Admin.Id };
+		ExtendedRestaurantInputModel restaurantInputModel = new() { Id = Restaurant.Id, Address = Restaurant.Address, FileName = Restaurant.FileName };
 		var parameters = new Dictionary<string, object>();
 		parameters.Add("ExtendedRestaurant", restaurantInputModel);
 		await modal.ShowAsync<RestaurantModificationForm>(title: "Редактирование ресторана", parameters: parameters);
+	}
+
+	private string CreateFullPath(string relativePath)
+	{
+		string path = Path.Combine("Images", relativePath);
+		return path;
 	}
 }
