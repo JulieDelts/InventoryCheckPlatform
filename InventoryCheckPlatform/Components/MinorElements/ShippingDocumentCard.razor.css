@@ -1,11 +1,24 @@
 ﻿.card {
     width: 175px;
-    height: 220px;
+    height: 250px;
     margin: 5px;
-    border: ridge;
+    border: solid;
     border-radius: 0;
-    border-color: #04d96f;
-    background-image: linear-gradient(to left top, #ffffff, #e7fdff, #b2ffff, #8bfff1, #a9ffae);
+    border-color: #eb2838;
+    background-image: linear-gradient(to left top, #ff9898, #ffb1c6, #f9cde7, #f6e8f9, #ffffff);
+    font-family: Verdana;
+}
+
+.ul {
+    max-height: 10px;
+    font-size: 8px;
+    overflow: auto;
+    scroll-behavior: smooth;
+}
+
+.options {
+    padding: 5px;
+    font-size: 10px;
     font-family: Verdana;
 }
 
@@ -26,14 +39,19 @@
 }
 
 .btn {
-    width: 90px;
-    height: 25px;
+    width: 75px;
+    height: 20px;
     font-size: 8px;
     font-weight: bold;
     font-family: Verdana;
     color: black;
-    border: solid #04d96f;
+    border: solid #eb2838;
     padding: 2px 1px 1px 1px;
     margin: 5px 5px 0 0;
     background: #f5f5f5;
+}
+
+.dropdown-item {
+    font-size: 10px;
+    font-family: Verdana;
 }

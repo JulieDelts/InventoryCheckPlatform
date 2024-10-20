@@ -13,7 +13,7 @@
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Главная
             </NavLink>
         </div>
         <AuthorizeView Roles="системный администратор">
@@ -52,6 +52,11 @@
                         <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span>Меню ресторана
                     </NavLink>
                 </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="shipping-documents-list-page">
+                        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span>Меню отгрузочных листов
+                    </NavLink>
+                </div>
             </Authorized>
         </AuthorizeView>
         <AuthorizeView Roles="логист">
@@ -66,6 +71,11 @@
                         <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span>Меню ресторанов
                     </NavLink>
                 </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="shipping-documents-list-page">
+                        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span>Меню отгрузочных листов
+                    </NavLink>
+                </div>
             </Authorized>
         </AuthorizeView>
     </nav>
@@ -78,6 +88,8 @@
 
     private int _restaurantId;
 
+    private int _userId;
+
     private List<Claim> claims = new List<Claim>();
 
     protected override async Task OnInitializedAsync()
@@ -87,13 +99,12 @@
         var authState = await State;
         var user = authState.User;
 
-        if (user.Identity is not null && user.Identity.IsAuthenticated)
-        {
-            claims = user.Claims.ToList();
-        }
+        var restaurantId = user.FindFirst("RestaurantId")?.Value ?? "0";
 
-        var id = user.FindFirst("RestaurantId")?.Value;
+       _restaurantId = Convert.ToInt32(restaurantId);
 
-        _restaurantId = Convert.ToInt32(id);
+        var userId = user.FindFirst("SystemId")?.Value;
+
+       _userId = Convert.ToInt32(userId);
     }
 }

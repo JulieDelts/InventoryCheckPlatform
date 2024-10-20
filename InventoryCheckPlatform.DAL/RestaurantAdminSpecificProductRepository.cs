@@ -38,7 +38,7 @@ namespace InventoryCheckPlatform.DAL
 
         public async Task<RestaurantSpecificProductAmount> GetSpecificProductWithAmountById(int restaurantId, int productId)
         {
-            var specificProductAmount = await _context.RestaurantSpecificProductAmount.Where(r => r.Restaurant.Id == restaurantId &&  r.SpecificProduct.Id == productId).Include(p => p.SpecificProduct).FirstOrDefaultAsync();
+            var specificProductAmount = await _context.RestaurantSpecificProductAmount.Where(r => r.Restaurant.Id == restaurantId &&  r.SpecificProduct.Id == productId).Include(p => p.SpecificProduct).Include(r => r.Restaurant).FirstOrDefaultAsync();
 
             if (specificProductAmount != null)
             {
@@ -78,7 +78,7 @@ namespace InventoryCheckPlatform.DAL
         {
             var specificProductAmountToUpdate = await GetSpecificProductWithAmountById(productAmount.Restaurant.Id, productAmount.SpecificProduct.Id);
 
-            specificProductAmountToUpdate.ProductAmount = productAmount.ProductAmount;
+            specificProductAmountToUpdate.ProductAmount += productAmount.ProductAmount;
             await _context.SaveChangesAsync();
         }
 
