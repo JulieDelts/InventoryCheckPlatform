@@ -1,0 +1,59 @@
+﻿@page "/shipping-documents-list-page"
+@attribute [StreamRendering]
+@attribute [Authorize(Roles = "администратор ресторана, логист")]
+@rendermode RenderMode.InteractiveServer
+
+
+@if (_shippingDocuments.Count > 0)
+{
+    <div class="card-holder">
+        @foreach (var sd in _shippingDocuments)
+        {
+           <ShippingDocumentCard ShippingDocument="@sd"></ShippingDocumentCard>
+        }
+    </div>
+}
+else
+{
+    <p>Отгрузочных листов нет.</p>
+}
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> State { get; set; }
+
+    private List<ShippingDocumentOutputModel> _shippingDocuments;
+
+    private LogisticianShippingDocumentManager _shippingDocumentManager;
+
+    private string _userRole;
+
+    public ShippingDocumentsMenuPage()
+    {
+        _shippingDocumentManager = new();
+        _shippingDocuments = new();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var authState = await State;
+        var user = authState.User;
+
+        _userRole = user.FindFirst(c => c.Type == ClaimTypes.Role)?.Value;
+
+        if (_userRole == "логист")
+        {
+            _shippingDocuments = await _shippingDocumentManager.GetAllShippingDocuments();
+        }
+        else if(_userRole == "администратор ресторана")
+        {
+            var restaurantIdString = user.FindFirst("RestaurantId")?.Value;
+
+            var restaurantId = Convert.ToInt32(restaurantIdString);
+
+            _shippingDocuments = await _shippingDocumentManager.GetAllShippingDocumentsByRestaurantId(restaurantId);
+        }
+    }
+}

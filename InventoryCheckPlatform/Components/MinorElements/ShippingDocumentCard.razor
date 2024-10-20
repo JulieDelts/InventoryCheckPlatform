@@ -1,0 +1,138 @@
+﻿@rendermode RenderMode.InteractiveServer
+
+<div class="card">
+	<div class="card-body">
+		<h5 class="card-title">@ShippingDocument.Id</h5>
+		<p class=" card-text">Имя логиста: @ShippingDocument.Logistician.Name</p>
+		<p class=" card-text">Адрес ресторана: @ShippingDocument.Restaurant.Address</p>
+		<p class=" card-text">Дата создания: @ShippingDocument.IssueDate</p>
+		<p class=" card-text">Статус: @ShippingDocument.Status</p>
+		@if (ShippingDocument.ShippingDocumentSpecificProductAmounts != null 
+		&& ShippingDocument.ShippingDocumentSpecificProductAmounts.Count > 0)
+		{
+
+			<ul>
+			@foreach (var product in ShippingDocument.ShippingDocumentSpecificProductAmounts)
+			{
+				<li>
+						<p class="card-text">Название продукта: @product.SpecificProduct.Name</p>
+						<p class="card-text">Количество: @product.ProductAmount</p>
+				</li>
+			}
+			</ul>
+		}
+		@if (ShippingDocument.DeliveryDate != null)
+		{
+			<p class=" card-text"> Ожидаемая дата поставки: @ShippingDocument.DeliveryDate</p>
+		}
+		<div class="dropdown">
+			<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+				Опции
+			</button>
+			<ul class="dropdown-menu">
+				<AuthorizeView Roles="логист">
+					<Authorized>
+						@if (ShippingDocument.Status != "доставлено")
+						{
+							<li><button class="dropdown-item" type="button" @onclick="ShowForm">Уточнить дату поставки</button></li>
+						}
+						@if (ShippingDocument.Status == "создан")
+						{
+							<li><button class="dropdown-item" type="button" @onclick="Delete">Удалить</button></li>
+						}
+					</Authorized>
+				</AuthorizeView>
+				<AuthorizeView Roles="администратор ресторана">
+					<Authorized>
+						@if (ShippingDocument.Status == "на выполнении")
+						{
+							<li><button class="dropdown-item" type="button" @onclick="Confirm">Пометить как выполненный</button></li>
+						}
+						else
+						{
+							<p class="options">Доступных опций нет.</p>	
+						}
+					</Authorized>
+				</AuthorizeView>
+			</ul>
+		</div> 
+
+		<Modal @ref="_modal" UseStaticBackdrop="false" CloseOnEscape="true" />
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	[EditorRequired]
+	public ShippingDocumentOutputModel ShippingDocument { get; set; }
+
+	[CascadingParameter]
+	public Task<AuthenticationState> State { get; set; }
+
+	private LogisticianShippingDocumentManager _shippingDocumentManager;
+
+	private RestaurantAdminProductManager _productManager;
+
+	private Modal _modal;
+
+	private int _restaurantId;
+
+	public ShippingDocumentCard()
+	{
+		_shippingDocumentManager = new();
+
+		_productManager = new();
+
+		_modal = new();
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+
+		var authState = await State;
+		var user = authState.User;
+
+		var userRole = user.FindFirst(c => c.Type == ClaimTypes.Role)?.Value;
+		if (userRole == "администратор ресторана")
+		{
+			var restaurantId = user.FindFirst("RestaurantId")?.Value ?? "0";
+
+			_restaurantId = Convert.ToInt32(restaurantId);
+		}
+	}
+
+	private async Task ShowForm()
+	{
+		ExtendedShippingDocumentInputModel shippingDocumentInputModel = new() 
+		{ Id = ShippingDocument.Id, Status = "на выполнении", IssueDate = ShippingDocument.IssueDate, LogisticianId = ShippingDocument.Logistician.Id, RestaurantId = ShippingDocument.Restaurant.Id };
+		var parameters = new Dictionary<string, object>();
+		parameters.Add("ShippingDocument", shippingDocumentInputModel);
+		await _modal.ShowAsync<SpecifyProductDeliveryDateForm>(title: "Уточнение даты поставки", parameters: parameters);
+	}
+
+	public async Task Confirm()
+	{
+		ExtendedShippingDocumentInputModel shippingDocument = new() 
+		{ Id = ShippingDocument.Id, Status = "доставлено", LogisticianId = ShippingDocument.Logistician.Id, RestaurantId = ShippingDocument.Logistician.Id };
+
+		var products = ShippingDocument.ShippingDocumentSpecificProductAmounts;
+
+		if (products != null && products.Count > 0)
+		{
+			foreach (var product in products)
+			{
+				var productAmount = new RestaurantSpecificProductAmountInputModel() { ProductAmount = product.ProductAmount, RestaurantId = _restaurantId, SpecificProductId = product.SpecificProduct.Id };
+
+				await _productManager.UpdateSpecificProductAmount(productAmount);
+			}
+		}
+
+		await _shippingDocumentManager.UpdateShippingDocument(shippingDocument);
+	}
+
+	public async Task Delete()
+	{
+		await _shippingDocumentManager.DeleteShippingDocument(ShippingDocument.Id);
+	}
+}
