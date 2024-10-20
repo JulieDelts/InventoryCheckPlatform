@@ -9,12 +9,9 @@ namespace InventoryCheckPlatform.BLL.Mappings
     {
         public RestaurantMapperProfile()
         {
-            CreateMap<RestaurantInputModel, Restaurant>()
-               .ForMember(dest => dest.Admin, opt => opt.MapFrom(src => new Restaurant { Id = src.AdminId }));
-            CreateMap<ExtendedRestaurantInputModel, Restaurant>()
-                .ForMember(dest => dest.Admin, opt => opt.MapFrom(src => new Restaurant { Id = src.AdminId }));
-            CreateMap<Restaurant, RestaurantOutputModel>()
-                .ForMember(dest => dest.Admin, opt => opt.MapFrom(src => src.Admin));
+            CreateMap<RestaurantInputModel, Restaurant>();
+            CreateMap<ExtendedRestaurantInputModel, Restaurant>();
+            CreateMap<Restaurant, RestaurantOutputModel>();
         }
     }
 }

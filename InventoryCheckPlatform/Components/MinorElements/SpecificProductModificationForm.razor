@@ -38,14 +38,21 @@
     [EditorRequired]
     public ExtendedSpecificProductInputModel ExtendedSpecificProduct { get; set; }
 
+    private LogisticianProductManager _manager;
+
     private IBrowserFile? file;
+
+    public SpecificProductModificationForm()
+    {
+        _manager = new();
+    }
 
     private async Task Submit()
     {
         var relativePath = await CaptureFile();
         ExtendedSpecificProduct.FileName = relativePath;
 
-        Console.WriteLine($"Изменилось!");
+        await _manager.UpdateSpecificProduct(ExtendedSpecificProduct);
     }
 
     private void LoadFile(InputFileChangeEventArgs e)

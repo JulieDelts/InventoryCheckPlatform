@@ -5,6 +5,8 @@ namespace InventoryCheckPlatform.Core.DTOs
 	{
 		public int Id { get; set; }
 
+        public string Name { get; set; }
+
 		public string Vendor { get; set; }
 
 		public double Price { get; set; }

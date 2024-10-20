@@ -1,4 +1,4 @@
-﻿using InventoryCheckPlatform.Core.DTOs;
+using InventoryCheckPlatform.Core.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace InventoryCheckPlatform.Core
@@ -37,12 +37,5 @@ namespace InventoryCheckPlatform.Core
             string connectionString = "Host=localhost;Port=5432;Database=invcheckdb;Username=postgres;Password=1234;";
             optionsBuilder.UseNpgsql(connectionString);
         }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-           
-            modelBuilder.Entity<User>().HasOne(u => u.Restaurant).WithOne(r => r.Admin).HasForeignKey<Restaurant>(r => r.AdminId);
-        }
-
     }
 }

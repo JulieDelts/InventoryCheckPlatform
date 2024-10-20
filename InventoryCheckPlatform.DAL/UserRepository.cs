@@ -17,6 +17,13 @@ namespace InventoryCheckPlatform.DAL
 
         public async Task<int> AddUser(User user)
         {
+            if(user.Restaurant!= null) 
+            {
+                var restaurant = await _context.Restaurant.Where(u => u.Id == user.Restaurant.Id).FirstOrDefaultAsync();
+
+                user.Restaurant = restaurant;
+            }
+           
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
@@ -25,7 +32,7 @@ namespace InventoryCheckPlatform.DAL
 
         public async Task<User> GetUserById(int id)
         {
-            var user = await _context.User.Where(s => s.Id == id).FirstOrDefaultAsync();
+            var user = await _context.User.Where(s => s.Id == id).Include(u => u.Restaurant).FirstOrDefaultAsync();
 
             if (user != null)
             {

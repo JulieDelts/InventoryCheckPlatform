@@ -9,8 +9,8 @@ namespace InventoryCheckPlatform.Core.OutputModels
 
 		public string Address { get; set; }
 
-        public string? FileName { get; set; }
+		public FullUserOutputModel Admin { get; set; }
 
-        public ShortUserOutputModel Admin { get; set; }
+        public string? FileName { get; set; }
 	}
 }

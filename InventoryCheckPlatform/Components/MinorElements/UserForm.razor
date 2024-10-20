@@ -71,6 +71,8 @@
         var relativePath = await CaptureFile();
         _user.FileName = relativePath;
 
+        _user.Role = _user.Role.ToLower();
+
         await _manager.AddUser(_user);
 
         Refresh();

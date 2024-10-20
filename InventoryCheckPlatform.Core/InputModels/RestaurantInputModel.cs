@@ -8,9 +8,6 @@ namespace InventoryCheckPlatform.Core.InputModels
         [Required(ErrorMessage = "Необходимо ввести адрес.")]
         public string Address { get; set; }
 
-        [Required(ErrorMessage = "Необходимо ввести идентификатор администратора.")]
-        public int AdminId { get; set; }
-
         [CustomFileExtensionValidation]
         public string? FileName { get; set; }
     }

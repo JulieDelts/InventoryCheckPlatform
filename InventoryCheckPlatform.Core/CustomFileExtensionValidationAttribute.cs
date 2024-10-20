@@ -13,7 +13,7 @@ namespace InventoryCheckPlatform.Core
         }
         public override bool IsValid(object? fileName)
         {
-            if (fileName == null) return true;
+            if (fileName == null || fileName.ToString() == "") return true;
 
             var file = (string)fileName;
 

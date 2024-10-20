@@ -17,11 +17,8 @@ namespace InventoryCheckPlatform.BLL.Mappings
             CreateMap<RestaurantSpecificProductAmountInputModel, RestaurantSpecificProductAmount>()
                 .ForMember(dest => dest.Restaurant, opt => opt.MapFrom(src => new Restaurant { Id = src.RestaurantId }))
                 .ForMember(dest => dest.SpecificProduct, opt => opt.MapFrom(src => new SpecificProduct { Id = src.SpecificProductId }));
-            CreateMap<SpecificProduct, SpecificProductOutputModel>()
-                .ForMember(dest => dest.BaseProduct, opt => opt.MapFrom(src => src.BaseProduct));
-            CreateMap<RestaurantSpecificProductAmount, RestaurantSpecificProductAmountOutputModel>()
-                .ForMember(dest => dest.RestaurantId, opt => opt.MapFrom(src => src.Restaurant.Id))
-                .ForMember(dest => dest.SpecificProductId, opt => opt.MapFrom(src => src.SpecificProduct.Id));
+            CreateMap<SpecificProduct, SpecificProductOutputModel>();
+            CreateMap<RestaurantSpecificProductAmount, RestaurantSpecificProductAmountOutputModel>();
         }
     }
 }

@@ -30,14 +30,21 @@
     [EditorRequired]
     public ExtendedBaseProductInputModel ExtendedBaseProduct { get; set; }
 
+    private SysAdminBaseProductManager _manager;
+
     private IBrowserFile? file;
+
+    public BaseProductModificationForm()
+    {
+        _manager = new();
+    }
 
     private async Task Submit()
     {
         var relativePath = await CaptureFile();
         ExtendedBaseProduct.FileName = relativePath;
 
-        Console.WriteLine($"Изменилось!");
+        await _manager.UpdateBaseProduct(ExtendedBaseProduct);
     }
 
     private void LoadFile(InputFileChangeEventArgs e)

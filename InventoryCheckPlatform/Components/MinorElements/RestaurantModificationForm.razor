@@ -9,10 +9,6 @@
         <InputText @bind-Value="ExtendedRestaurant.Address" Placeholder="@ExtendedRestaurant.Address" class="form-control" />
     </div>
     <div class="mb-3 text-center">
-        <label class="form-label">Идентификатор администратора:<span class="text-danger">*</span></label>
-        <InputNumber @bind-Value="ExtendedRestaurant.AdminId" Placeholder="@ExtendedRestaurant.AdminId" class="form-control" />
-    </div>
-    <div class="mb-3 text-center">
         <label class="form-label">Изображение:</label>
         <InputFile OnChange="@LoadFile" accept=".png,.jpg,.jpeg" class="form-control"></InputFile>
     </div>
@@ -30,21 +26,27 @@
     [EditorRequired]
     public ExtendedRestaurantInputModel ExtendedRestaurant { get; set; }
 
+    private SysAdminRestaurantManager _restaurantManager;
+
     private IBrowserFile? file;
+
+    public RestaurantModificationForm()
+    {
+        _restaurantManager = new();
+    }
 
     private async Task Submit()
     {
         var relativePath = await CaptureFile();
         ExtendedRestaurant.FileName = relativePath;
 
-        Console.WriteLine($"Изменилось!");
+        await _restaurantManager.UpdateRestaurant(ExtendedRestaurant);
     }
 
     private void LoadFile(InputFileChangeEventArgs e)
     {
         file = e.File;
     }
-
 
     private async Task<string> CaptureFile()
     {

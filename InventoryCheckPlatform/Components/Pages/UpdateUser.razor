@@ -1,6 +1,6 @@
 ﻿@page "/edit-user/{userId:int}"
 @attribute [StreamRendering]
-@attribute [Authorize(Roles = "администратор")]
+@attribute [Authorize(Roles = "системный администратор")]
 @inject NavigationManager NavigationManager
 @rendermode RenderMode.InteractiveServer
 @inject IConfiguration config
@@ -81,6 +81,8 @@
     {
         var relativePath = await CaptureFile();
         _user.FileName = relativePath;
+
+        _user.Role = _user.Role.ToLower();
 
        await _userManager.UpdateUser(_updatedUser);
 

@@ -7,120 +7,119 @@ using InventoryCheckPlatform.DAL;
 
 namespace InventoryCheckPlatform.BLL
 {
-    public class SysAdminUserManager
-    {
-        private Mapper _mapper;
+	public class SysAdminUserManager
+	{
+		private Mapper _mapper;
 
-        private UserRepository _userRepository;
-    
-        public SysAdminUserManager()
-        {
-            _userRepository = new UserRepository();
+		private UserRepository _userRepository;
 
-            var config = new MapperConfiguration(
-                cfg =>
-                {
-                    cfg.AddProfile(new UserMapperProfile());
-                });
-            _mapper = new Mapper(config);
-        } 
-        
-        public async Task<int> AddUser(UserInputModel user)
-        {
-            var userDTO = _mapper.Map<User>(user);
+		public SysAdminUserManager()
+		{
+			_userRepository = new UserRepository();
 
-            var userId = await _userRepository.AddUser(userDTO);
+			var config = new MapperConfiguration(
+				cfg =>
+				{
+					cfg.AddProfile(new UserMapperProfile());
+					cfg.AddProfile(new RestaurantMapperProfile());
+				});
+			_mapper = new Mapper(config);
+		}
 
-            return userId;
-        }
+		public async Task<int> AddUser(UserInputModel user)
+		{
+			try
+			{
+				var userDTO = _mapper.Map<User>(user);
 
-        public async Task<List<ShortUserOutputModel>> GetAllUsersShortInfo()
-        {
-            var userDTOs = await _userRepository.GetAllUsers();  
+				var userId = await _userRepository.AddUser(userDTO);
 
-            var users = new List<ShortUserOutputModel>();
+				return userId;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
 
-            foreach (var userDTO in userDTOs)
-            {
-                var user = _mapper.Map<ShortUserOutputModel>(userDTO);
-                users.Add(user);
-            }
+				return 0;
+			}
+		}
 
-            return users;   
+		public async Task<List<ShortUserOutputModel>> GetAllUsersShortInfo()
+		{
+			var users = new List<ShortUserOutputModel>();
 
-            //return new List<ShortUserOutputModel>
-            //{
-            //    new ShortUserOutputModel()
-            //    {
-            //        Id = 1,
-            //        Name = "Pasha",
-            //        RestaurantId = 1,
-            //        Role = "Admin"
-            //    },
+			try
+			{
+				var userDTOs = await _userRepository.GetAllUsers();
 
-            //    new ShortUserOutputModel()
-            //    {
-            //        Id = 2,
-            //        Name = "Sergey",
-            //        RestaurantId = 1,
-            //        Role = "Waiter"
-            //    },
-            //    new ShortUserOutputModel()
+				if (userDTOs.Count > 0)
+				{
+					foreach (var userDTO in userDTOs)
+					{
+						var user = _mapper.Map<ShortUserOutputModel>(userDTO);
+						users.Add(user);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+			}
 
-            //    {
-            //        Id = 3,
-            //        Name = "Igor",
-            //        RestaurantId = 3,
-            //        Role = "Waiter"
-            //    },
-            //    new ShortUserOutputModel()
+			return users;
+		}
 
-            //    {
-            //        Id = 4,
-            //        Name = "Irina",
-            //        RestaurantId = 1,
-            //        Role = "Waiter"
-            //    },
-            //    new ShortUserOutputModel()
-            //    {
-            //        Id = 5,
-            //        Name = "Olga",
-            //        RestaurantId = 1,
-            //        Role = "Waiter"
-            //    },
-            //    new ShortUserOutputModel()
-            //    {
-            //        Id = 6,
-            //        Name = "Oleg",
-            //        RestaurantId = 0,
-            //        Role = "Logist"
-            //    }
-            //};
-        }
+		public async Task<FullUserOutputModel> GetUserById(int id)
+		{
+			try
+			{
+				var userDTO = await _userRepository.GetUserById(id);
 
-        public async Task<FullUserOutputModel> GetUserById(int id)
-        {
-            var userDTO = await _userRepository.GetUserById(id);
+				var userResponse = _mapper.Map<FullUserOutputModel>(userDTO);
 
-            var userResponse = _mapper.Map<FullUserOutputModel>(userDTO);
+				return userResponse;
 
-            return userResponse;
-        }
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
 
-        public async Task<int> UpdateUser(ExtendedUserInputModel updatedUser)
-        {
-            var userDTO = _mapper.Map<User>(updatedUser);
+				return new FullUserOutputModel();
+			}
+		}
 
-            var id = await _userRepository.UpdateUser(userDTO);
+		public async Task<int> UpdateUser(ExtendedUserInputModel updatedUser)
+		{
+			try
+			{
+				var userDTO = _mapper.Map<User>(updatedUser);
 
-            return id;
-        }
+				var id = await _userRepository.UpdateUser(userDTO);
 
-        public async Task<int> DeleteUser(int id)
-        {
-            int userId = await _userRepository.DeleteUser(id);
+				return id;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
 
-            return userId;
-        }
-    }
+				return 0;
+			}
+		}
+
+		public async Task<int> DeleteUser(int id)
+		{
+			try
+			{
+				int userId = await _userRepository.DeleteUser(id);
+
+				return userId;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+
+			    return 0;
+			}
+		}
+	}
 }
