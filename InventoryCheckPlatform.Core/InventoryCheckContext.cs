@@ -29,6 +29,9 @@ namespace InventoryCheckPlatform.Core
 
         public DbSet<ShippingDocumentSpecificProductAmount> ShippingDocumentSpecificProductAmount { get; set; }
 
+        public DbSet<Order> Orders { get; set; }
+      
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             string connectionString = "Host=localhost;Port=5432;Database=invcheckdb;Username=postgres;Password=1234;";
@@ -37,7 +40,7 @@ namespace InventoryCheckPlatform.Core
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>();
+           
             modelBuilder.Entity<User>().HasOne(u => u.Restaurant).WithOne(r => r.Admin).HasForeignKey<Restaurant>(r => r.AdminId);
         }
 
