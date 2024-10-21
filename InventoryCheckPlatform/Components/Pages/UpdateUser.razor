@@ -86,7 +86,7 @@
 
        await _userManager.UpdateUser(_updatedUser);
 
-       NavigationManager.NavigateTo("/user-list-page");
+       NavigationManager.NavigateTo("/user-list-page", true);
     }
 
     private void LoadFile(InputFileChangeEventArgs e)
@@ -117,7 +117,7 @@
 
     private void Cancel()
     {
-        NavigationManager.NavigateTo("/user-list-page");
+        NavigationManager.NavigateTo("/user-list-page", true);
     }
 }
 

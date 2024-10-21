@@ -94,6 +94,6 @@ else
     {
         await _manager.DeleteUser(_user.Id);
 
-        NavigationManager.NavigateTo($"/user-list-page");
+        NavigationManager.NavigateTo($"/user-list-page", true);
     }
 }

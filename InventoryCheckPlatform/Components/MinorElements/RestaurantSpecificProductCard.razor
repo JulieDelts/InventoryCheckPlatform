@@ -1,4 +1,6 @@
 ﻿@rendermode RenderMode.InteractiveServer
+@inject NavigationManager NavigationManager
+
 <div class="card">
 	@if (SpecificProductAmount.SpecificProduct.FileName != null && SpecificProductAmount.SpecificProduct.FileName != "")
 	{
@@ -23,13 +25,13 @@
 					</button>
 					<ul class="dropdown-menu">
 						<li><button class="dropdown-item" type="button" @onclick="ShowForm">Редактировать</button></li>
-						<li><button class="dropdown-item" type="button">Удалить</button></li>
+						<li><button class="dropdown-item" type="button" @onclick="Delete">Удалить</button></li>
 					</ul>
-				</div>
+				</div> 
 			</Authorized>
 		</AuthorizeView>
 
-		<Modal @ref="modal" UseStaticBackdrop="false" CloseOnEscape="true" />
+		<Modal @ref="_modal" UseStaticBackdrop="false" CloseOnEscape="true" />
 
 	</div>
 </div>
@@ -44,7 +46,16 @@
 	[EditorRequired]
 	public int RestaurantId { get; set; }
 
-	private Modal modal = new();
+	private RestaurantAdminProductManager _manager;
+
+	private Modal _modal;
+
+	public RestaurantSpecificProductCard()
+	{
+		_modal = new();
+
+		_manager = new();
+	}
 
 	private async Task ShowForm()
 	{
@@ -55,7 +66,17 @@
 		};
 		var parameters = new Dictionary<string, object>();
 		parameters.Add("SpecificProductlWithAmount", productAmountInputModel);
-		await modal.ShowAsync<SpecificProductAmountModificationForm>(title: "Редактирование количества продукта", parameters: parameters);
+		await _modal.ShowAsync<SpecificProductAmountModificationForm>(title: "Редактирование количества продукта", parameters: parameters);
+	}
+
+	public async Task Delete()
+	{
+		var specificProductAmount = new RestaurantSpecificProductAmountInputModel() 
+		{ RestaurantId = SpecificProductAmount.Restaurant.Id, SpecificProductId = SpecificProductAmount.SpecificProduct.Id };
+
+		await _manager.DeleteSpecificProduct(specificProductAmount);
+
+		NavigationManager.NavigateTo($"/rest-product-menu-page/{RestaurantId}", true);
 	}
 
 	private string CreateFullPath(string relativePath)

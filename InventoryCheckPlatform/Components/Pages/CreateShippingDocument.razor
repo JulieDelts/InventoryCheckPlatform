@@ -1,0 +1,57 @@
+﻿@page "/create-shipping-document-for-restaurant/{restaurantId:int}"
+@attribute [StreamRendering]
+@attribute [Authorize(Roles = "логист")]
+@rendermode RenderMode.InteractiveServer
+@inject NavigationManager NavigationManager
+
+<h5>Заказ продуктов для ресторанa Id: @restaurantId</h5>
+
+<p>Создание отгрузочного листа.</p>
+<p>Нажмите подтвердить для выбора продуктов для ресторана или отменить, чтобы вернуться в меню ресторанов.</p>
+
+<div class="row">
+    <div class="col-md-14 text-center">
+        <button class="btn btn-success" @onclick="Submit">Подтвердить</button>
+        <button class="btn btn-light" @onclick="Cancel">Отмена</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public int restaurantId { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> State { get; set; }
+
+    public LogisticianShippingDocumentManager _shippingDocumentManager;
+
+    public CreateShippingDocument()
+    {
+        _shippingDocumentManager = new();
+    }
+
+    public async Task Submit()
+    {
+        var authState = await State;
+        var user = authState.User;
+
+        var id = user.FindFirst("SystemId")?.Value;
+
+        var logisticianId = Convert.ToInt32(id);
+
+        var issueDate = DateOnly.FromDateTime(DateTime.Now);
+
+        ShippingDocumentInputModel _shippingDocument = new() { LogisticianId = logisticianId, RestaurantId = restaurantId, Status = "создан", IssueDate = issueDate };
+
+        var shippingDocumentId = await _shippingDocumentManager.AddShippingDocument(_shippingDocument);
+
+        NavigationManager.NavigateTo($"/order-products-for-restaurant/{restaurantId}/{shippingDocumentId}");
+    }
+
+    public void Cancel()
+    {
+        NavigationManager.NavigateTo("/restaurants-menu-page");
+    }
+
+}

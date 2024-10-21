@@ -1,5 +1,6 @@
 ﻿@rendermode RenderMode.InteractiveServer
 @inject IConfiguration config
+@inject NavigationManager NavigationManager
 
 <EditForm Model="@ExtendedRestaurant" OnValidSubmit="@Submit">
     <DataAnnotationsValidator />
@@ -41,6 +42,8 @@
         ExtendedRestaurant.FileName = relativePath;
 
         await _restaurantManager.UpdateRestaurant(ExtendedRestaurant);
+
+        NavigationManager.NavigateTo($"/restaurants-menu-page", true);
     }
 
     private void LoadFile(InputFileChangeEventArgs e)

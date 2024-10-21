@@ -1,5 +1,6 @@
 ﻿@rendermode RenderMode.InteractiveServer
 @inject IConfiguration config
+@inject NavigationManager NavigationManager
 
 <EditForm Model="@ExtendedBaseProduct" OnValidSubmit="@Submit">
     <DataAnnotationsValidator />
@@ -45,13 +46,14 @@
         ExtendedBaseProduct.FileName = relativePath;
 
         await _manager.UpdateBaseProduct(ExtendedBaseProduct);
+
+        NavigationManager.NavigateTo($"/base-product-menu-page", true);
     }
 
     private void LoadFile(InputFileChangeEventArgs e)
     {
         file = e.File;
     }
-
 
     private async Task<string> CaptureFile()
     {

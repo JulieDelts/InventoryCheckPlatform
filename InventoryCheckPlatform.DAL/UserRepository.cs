@@ -1,6 +1,7 @@
 ﻿
 using InventoryCheckPlatform.Core;
 using InventoryCheckPlatform.Core.DTOs;
+using InventoryCheckPlatform.Core.OutputModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace InventoryCheckPlatform.DAL
@@ -83,6 +84,13 @@ namespace InventoryCheckPlatform.DAL
             await _context.SaveChangesAsync();
 
             return userToDelete.Id;
+        }
+
+        public async Task<User?> CheckUserCredentials(string login, string password)
+        {
+            var user = await _context.User.Where(u => u.Login == login && u.Password == password).Include(u => u.Restaurant).FirstOrDefaultAsync();
+
+            return user;
         }
     }
 }
