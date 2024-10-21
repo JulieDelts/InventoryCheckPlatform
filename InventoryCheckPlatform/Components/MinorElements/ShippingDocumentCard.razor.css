@@ -9,9 +9,8 @@
     font-family: Verdana;
 }
 
-.ul {
-    max-height: 10px;
-    font-size: 8px;
+.container {
+    max-height:70px;
     overflow: auto;
     scroll-behavior: smooth;
 }

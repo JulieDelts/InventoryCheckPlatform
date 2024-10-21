@@ -11,20 +11,21 @@
 		@if (ShippingDocument.ShippingDocumentSpecificProductAmounts != null 
 		&& ShippingDocument.ShippingDocumentSpecificProductAmounts.Count > 0)
 		{
-
-			<ul>
-			@foreach (var product in ShippingDocument.ShippingDocumentSpecificProductAmounts)
-			{
-				<li>
+			<div class="container">
+				<ul>
+				@foreach (var product in ShippingDocument.ShippingDocumentSpecificProductAmounts)
+				{
+					<li>
 						<p class="card-text">Название продукта: @product.SpecificProduct.Name</p>
 						<p class="card-text">Количество: @product.ProductAmount</p>
-				</li>
-			}
-			</ul>
+					</li>
+				}
+				</ul>
+			</div>
 		}
 		@if (ShippingDocument.DeliveryDate != null)
 		{
-			<p class=" card-text"> Ожидаемая дата поставки: @ShippingDocument.DeliveryDate</p>
+			<p class="card-text"> Ожидаемая дата поставки: @ShippingDocument.DeliveryDate</p>
 		}
 		<div class="dropdown">
 			<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
