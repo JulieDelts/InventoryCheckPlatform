@@ -1,5 +1,6 @@
 ﻿@rendermode RenderMode.InteractiveServer
 @inject IConfiguration config
+@inject NavigationManager NavigationManager
 
 <div class="dropdown-center">
     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -76,6 +77,8 @@
         await _manager.AddUser(_user);
 
         Refresh();
+
+        NavigationManager.NavigateTo("/user-list-page", true);
     }
 
     private void LoadFile(InputFileChangeEventArgs e)

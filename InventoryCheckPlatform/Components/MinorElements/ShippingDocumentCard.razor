@@ -1,4 +1,5 @@
 ﻿@rendermode RenderMode.InteractiveServer
+@inject NavigationManager NavigationManager
 
 <div class="card">
 	<div class="card-body">
@@ -129,10 +130,14 @@
 		}
 
 		await _shippingDocumentManager.UpdateShippingDocument(shippingDocument);
+
+		NavigationManager.NavigateTo($"/shipping-documents-list-page", true);
 	}
 
 	public async Task Delete()
 	{
 		await _shippingDocumentManager.DeleteShippingDocument(ShippingDocument.Id);
+
+		NavigationManager.NavigateTo($"/shipping-documents-list-page", true);
 	}
 }

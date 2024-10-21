@@ -1,5 +1,6 @@
 ﻿@rendermode RenderMode.InteractiveServer
 @inject IConfiguration config
+@inject NavigationManager NavigationManager
 
 <EditForm Model="@ExtendedSpecificProduct" OnValidSubmit="@Submit">
     <DataAnnotationsValidator />
@@ -53,13 +54,14 @@
         ExtendedSpecificProduct.FileName = relativePath;
 
         await _manager.UpdateSpecificProduct(ExtendedSpecificProduct);
+
+        NavigationManager.NavigateTo($"/logistician-product-menu-page", true);
     }
 
     private void LoadFile(InputFileChangeEventArgs e)
     {
         file = e.File;
     }
-
 
     private async Task<string> CaptureFile()
     {

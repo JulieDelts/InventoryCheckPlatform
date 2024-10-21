@@ -8,13 +8,16 @@ namespace InventoryCheckPlatform.Core.InputModels
         [Required(ErrorMessage = "Необходимо ввести название.")]
         public string Name { get; set; }
 
-        public int BaseProductId { get; set; }
+		[Range(1, int.MaxValue, ErrorMessage = "Значение должно быть больше 0."), Required(ErrorMessage = "Необходимо ввести идентификатор продукта.")]
+		public int BaseProductId { get; set; }
 
         [CustomFileExtensionValidation]
         public string? FileName { get; set; }
 
-        public string Vendor { get; set; }
+		[Required(ErrorMessage = "Необходимо ввести поставщика.")]
+		public string Vendor { get; set; }
 
-        public double Price { get; set; }
+		[Range(1, int.MaxValue, ErrorMessage = "Значение должно быть больше 0."), Required(ErrorMessage = "Необходимо ввести цену.")]
+		public double Price { get; set; }
     }
 }

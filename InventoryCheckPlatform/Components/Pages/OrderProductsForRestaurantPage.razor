@@ -118,7 +118,7 @@
 
         await _shippingDocumentManager.UpdateShippingDocument(shippingDocument);
 
-        NavigationManager.NavigateTo("/shipping-documents-list-page");
+        NavigationManager.NavigateTo("/shipping-documents-list-page", true);
     }
 
     private void HandleOnValidSubmit()

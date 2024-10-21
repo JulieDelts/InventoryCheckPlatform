@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace InventoryCheckPlatform.Core.InputModels
 {
     public class ShippingDocumentSpecificProductAmountInputModel
@@ -7,6 +9,7 @@ namespace InventoryCheckPlatform.Core.InputModels
 
         public int ShippingDocumentId { get; set; }
 
-        public int ProductAmount { get; set; }
+		[Range(1, int.MaxValue, ErrorMessage = "Значение должно быть больше 0."), Required(ErrorMessage = "Необходимо ввести количество продукта.")]
+		public int ProductAmount { get; set; }
     }
 }

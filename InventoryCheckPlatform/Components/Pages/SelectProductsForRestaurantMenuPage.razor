@@ -2,6 +2,7 @@
 @attribute [StreamRendering]
 @attribute [Authorize(Roles = "администратор ресторана")]
 @rendermode RenderMode.InteractiveServer
+@inject NavigationManager NavigationManager
 
 <Grid TItem="SpecificProductOutputModel"
       Class="table table-hover table-bordered table-striped"
@@ -94,15 +95,28 @@
 
         if (_selectedSpecificProducts.Count > 0)
         {
+            var productsInRestaurant = await _restaurantProductManager.GetAllSpecificProductsWithAmount(restaurantId);
+
             foreach (var product in _selectedSpecificProducts)
             {
-                var productAmount = new RestaurantSpecificProductAmountInputModel() { ProductAmount = 1, RestaurantId = restaurantId, SpecificProductId = product.Id };
+                var productInRestaurant = productsInRestaurant.Where(p => p.SpecificProduct.Id == product.Id).FirstOrDefault();
 
-                productAmounts.Add(productAmount);
+                if (productInRestaurant != null)
+                {
+                    continue;
+                }
+                else
+                {
+                    var productAmount = new RestaurantSpecificProductAmountInputModel() { ProductAmount = 1, RestaurantId = restaurantId, SpecificProductId = product.Id };
+
+                    productAmounts.Add(productAmount);
+                }
             }
         }
         
         await _restaurantProductManager.AddSpecificProductsToRestaurant(productAmounts);
+
+        NavigationManager.NavigateTo($"/rest-product-menu-page/{restaurantId}");
     }
 
     private void Cancel()

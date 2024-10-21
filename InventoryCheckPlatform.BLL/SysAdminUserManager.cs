@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Reflection.Metadata.Ecma335;
+using AutoMapper;
 using InventoryCheckPlatform.BLL.Mappings;
 using InventoryCheckPlatform.Core.DTOs;
 using InventoryCheckPlatform.Core.InputModels;
@@ -119,6 +120,31 @@ namespace InventoryCheckPlatform.BLL
 				Console.WriteLine(ex);
 
 			    return 0;
+			}
+		}
+
+		public async Task<ShortUserOutputModel?> CheckUserCredentials(LoginInputModel credentials)
+		{
+			try
+			{
+				var user = await _userRepository.CheckUserCredentials(credentials.Login, credentials.Password);
+
+				if (user != null)
+				{
+					var userShortInfo = _mapper.Map<ShortUserOutputModel>(user);
+
+					return userShortInfo;
+				}
+				else
+				{
+					return null;
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+				
+				return null;
 			}
 		}
 	}
