@@ -40,7 +40,7 @@
     {
        await _manager.UpdateSpecificProductAmount(SpecificProductlWithAmount);
 
-        NavigationManager.NavigateTo($"/rest-product-menu-page/{SpecificProductlWithAmount.RestaurantId:int}", true);
+        NavigationManager.NavigateTo($"/rest-product-menu-page/{SpecificProductlWithAmount.RestaurantId}", true);
     }
 
     private void Refresh()

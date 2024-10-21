@@ -31,7 +31,7 @@ namespace InventoryCheckPlatform.Core
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = "Host=localhost;Port=5432;Database=invcheckdb;Username=postgres;Password=postgres;";
+            string connectionString = Options.ConnectionString;
             optionsBuilder.UseNpgsql(connectionString);
         }
     }
