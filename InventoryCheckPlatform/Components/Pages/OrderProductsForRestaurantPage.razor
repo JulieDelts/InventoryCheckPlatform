@@ -1,0 +1,155 @@
+﻿@page "/order-products-for-restaurant/{restaurantId:int}"
+@attribute [StreamRendering]
+@attribute [Authorize(Roles = "логист")]
+@rendermode RenderMode.InteractiveServer
+@inject NavigationManager NavigationManager
+
+<h5>Заказ продуктов для ресторанa Id: @restaurantId</h5>
+
+<p>Был создан отгрузочный лист Id: @_shippingDocumentId</p>
+<p>Выберите продукты для ресторана:</p>
+
+
+<div class="form-group row mb-2">
+	<label class="col-md-2 col-form-label">Продукт:</label>
+	<div class="col-md-10">
+		<AutoComplete @bind-Value="@_specificProduct.Name"
+
+					  TItem="SpecificProductOutputModel"
+					  DataProvider="CustomersDataProvider"
+					  PropertyName="Name"
+					  Placeholder="Поиск продукта..."
+                      OnChanged="(SpecificProductOutputModel product) => OnAutoCompleteChanged(product)" />
+	</div>
+</div>
+
+<EditForm EditContext="@_editContext" OnValidSubmit="HandleOnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="form-group row mb-3">
+        <label class="col-md-2 col-form-label">Количество:</label>
+        <div class="col-md-10">
+            <InputNumber class="form-control" @bind-Value="_shippingDocumentSpecificProductAmount.ProductAmount" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="submit" class="btn btn-success float-right">Добавить</button>
+        </div>
+    </div>
+</EditForm>
+
+<div class="row">
+	<div class="col-md-14 text-center">
+        <p>Количество выбранных товаров: @_shippingDocumentSpecificProductAmounts.Count</p>
+		<button type="button" class="btn btn-success" @onclick="Submit">Подтвердить</button>
+		<button type="button" class="btn btn-secondary" @onclick="Cancel">Очистить список продуктов</button>
+	</div>
+</div>
+@code {
+    [Parameter]
+    public int restaurantId { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> State { get; set; }
+
+    private int _shippingDocumentId;
+
+    private LogisticianShippingDocumentManager _shippingDocumentManager;
+
+    private LogisticianProductManager _logisticianProductManager;
+
+    private List<ShippingDocumentSpecificProductAmountInputModel> _shippingDocumentSpecificProductAmounts;
+
+    private ShippingDocumentSpecificProductAmountInputModel _shippingDocumentSpecificProductAmount;
+
+    private SpecificProductOutputModel _specificProduct;
+
+    private List<SpecificProductOutputModel> _specificProducts;
+
+    private EditContext? _editContext;
+
+    public OrderProductsForRestaurantPage()
+    {
+        _shippingDocumentSpecificProductAmounts = new();
+
+        _specificProduct = new();
+
+        _logisticianProductManager = new();
+
+        _shippingDocumentManager = new();
+
+        _shippingDocumentSpecificProductAmount = new();
+
+        _specificProducts = new();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _editContext = new EditContext(_shippingDocumentSpecificProductAmount);
+
+        _specificProducts = await _logisticianProductManager.GetAllSpecificProducts();
+
+        var authState = await State;
+        var user = authState.User;
+
+        var id = user.FindFirst("SystemId")?.Value;
+
+        var logisticianId = Convert.ToInt32(id);
+
+        var issueDate = DateOnly.FromDateTime(DateTime.Now);
+
+        ShippingDocumentInputModel _shippingDocument = new() { LogisticianId = logisticianId, RestaurantId = restaurantId, Status = "создан", IssueDate = issueDate };
+
+        _shippingDocumentId = await _shippingDocumentManager.AddShippingDocument(_shippingDocument);
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Submit()
+    {
+        foreach (var productAmount in _shippingDocumentSpecificProductAmounts)
+        {
+            await _shippingDocumentManager.AddShippingDocumentSpecificProductAmount(productAmount);
+        }
+
+        ExtendedShippingDocumentInputModel shippingDocument = new() { Id = _shippingDocumentId, Status = "подтвержден" };
+
+        await _shippingDocumentManager.UpdateShippingDocument(shippingDocument);
+
+        NavigationManager.NavigateTo("/shipping-documents-list-page");
+    }
+
+    private void HandleOnValidSubmit()
+    {
+        var productAmount = new ShippingDocumentSpecificProductAmountInputModel() 
+            { ProductAmount = _shippingDocumentSpecificProductAmount.ProductAmount, ShippingDocumentId = _shippingDocumentId, SpecificProductId = _specificProduct.Id };
+
+        _shippingDocumentSpecificProductAmounts.Add(productAmount);
+
+        _shippingDocumentSpecificProductAmount = new();
+    }
+
+    private void OnAutoCompleteChanged(SpecificProductOutputModel selectedProduct)
+    {
+        var product = _specificProducts.Where(s => s.Name == selectedProduct.Name).FirstOrDefault();
+
+        if (product != null)
+        {
+            _specificProduct = product;     
+        }
+    }
+
+    private void Cancel()
+    {
+        _shippingDocumentSpecificProductAmounts.Clear();
+    }
+
+    private async Task<AutoCompleteDataProviderResult<SpecificProductOutputModel>> CustomersDataProvider(AutoCompleteDataProviderRequest<SpecificProductOutputModel> request)
+    {
+        return await Task.FromResult(request.ApplyTo(_specificProducts.OrderBy(product => product.Name)));
+    }
+}
+
+

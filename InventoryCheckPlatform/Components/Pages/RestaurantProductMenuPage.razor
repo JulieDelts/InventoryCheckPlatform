@@ -15,7 +15,7 @@
 <AuthorizeView Roles="логист">
     <Authorized>
 		<div class="col-md-12 text-center">
-			<a href=@("")>Заказать продукты для ресторана</a>
+            <a href=@($"/order-products-for-restaurant/{restaurantId}")>Заказать продукты для ресторана</a>
 		</div>
 	</Authorized>
 </AuthorizeView>

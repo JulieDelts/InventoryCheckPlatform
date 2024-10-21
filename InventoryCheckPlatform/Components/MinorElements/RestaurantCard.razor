@@ -30,7 +30,7 @@
 				</AuthorizeView>
 				<AuthorizeView Roles="логист">
 					<Authorized>
-						<li><a class="dropdown-item" href="#">Посмотреть продукты</a></li>
+						<li><a class="dropdown-item" href="@($"rest-product-menu-page/{Restaurant.Id}")">Посмотреть продукты</a></li>
 					</Authorized>
 				</AuthorizeView>
 			</ul>

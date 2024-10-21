@@ -1,0 +1,34 @@
+﻿@rendermode RenderMode.InteractiveServer
+
+<EditForm Model="@ShippingDocument" OnValidSubmit="@Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3 text-center">
+        <label class="form-label">Дата поставки: </label>
+        <DateInput TValue="DateOnly?" @bind-Value="@ShippingDocument.DeliveryDate" Placeholder="Enter Date" />
+    </div>
+    <div class="row">
+        <div class="col-md-14 text-center">
+            <input class="btn btn-success" type="submit" value="Подтвердить">
+            <input class="btn btn-light" type="reset" value="Сбросить">
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public ExtendedShippingDocumentInputModel ShippingDocument { get; set; }
+
+    private LogisticianShippingDocumentManager _shippingDocumentManager;
+
+    public SpecifyProductDeliveryDateForm()
+    {
+        _shippingDocumentManager = new();
+    }
+
+    private async Task Submit()
+    {
+        await _shippingDocumentManager.UpdateShippingDocument(ShippingDocument);
+    }
+}
