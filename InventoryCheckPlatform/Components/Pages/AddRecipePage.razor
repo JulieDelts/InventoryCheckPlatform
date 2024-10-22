@@ -1,5 +1,107 @@
-﻿<h3>AddRecipePage</h3>
+﻿@page "/add-recipe"
+@attribute [StreamRendering]
+@attribute [Authorize(Roles = "администратор ресторана")]
+@rendermode RenderMode.InteractiveServer
+@using InventoryCheckPlatform.Core
+@using InventoryCheckPlatform.Core.DTOs
+
+
+<h3>Добавление нового рецепта</h3>
+
+<EditForm Model="_newRecipe" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="RecipeTitle" class="form-label">Название рецепта</label>
+        <InputText id="RecipeTitle" class="form-control" @bind-Value="_newRecipe.Name" />
+    </div>
+
+    <div class="mb-3">
+        <label for="BaseProductDropdown" class="form-label">Выбор ингредиента</label>
+        <Dropdown Color="DropdownColor.Secondary">
+            <DropdownToggleButton>@(selectedProduct?.Name ?? "Выберите продукт")</DropdownToggleButton>
+            <DropdownMenu>
+                @foreach (var product in products)
+                {
+                    <DropdownItem @onclick="() => SelectProduct(product)">@product.Name</DropdownItem>
+                }
+            </DropdownMenu>
+        </Dropdown>
+    </div>
+
+    <div class="mb-3">
+        <label for="ProductAmount" class="form-label">Количество</label>
+        <InputNumber id="ProductAmount" class="form-control" @bind-Value="_selectedProductAmount" />
+    </div>
+
+    <button type="button" class="btn btn-primary" @onclick="AddIngredient">Добавить ингредиент</button>
+    <button type="submit" class="btn btn-success">Добавить рецепт</button>
+</EditForm>
+
+ @if (_ingredients.Count > 0)
+{
+    <h4>Ингредиенты:</h4>
+    <ul>
+        @foreach (var ingredient in _ingredients)
+        {
+            <li>@($"{ingredient.Name}: {ingredient.Count}")</li>
+        }
+    </ul>
+}
+else
+{
+    <p>Ингредиенты еще не добавлены</p> 
+}
 
 @code {
+    private RecipeOutputModel _newRecipe = new RecipeOutputModel();
+    private List<BaseProductForRecipeOutputModel> _ingredients = new List<BaseProductForRecipeOutputModel>();
+    private List<BaseProductOutputModel> products=new();
+    private BaseProductOutputModel selectedProduct=new();
+    private int _selectedProductAmount;
+    private AdminRecipeManager recipeManager = new();
+    private SysAdminBaseProductManager productManager = new();
+    protected override async Task OnInitializedAsync()
+    {
+        products = await productManager.GetAllBaseProducts();
+    }
 
+    private void SelectProduct(BaseProductOutputModel product)
+    {
+        selectedProduct = product;
+    }
+
+    private void AddIngredient()
+    {
+        if (selectedProduct != null && _selectedProductAmount > 0)
+        {
+            _ingredients.Add(new BaseProductForRecipeOutputModel
+                {
+                    Id=selectedProduct.Id,
+                    Name = selectedProduct.Name,
+                    Count = _selectedProductAmount
+              
+                    
+                });
+            _selectedProductAmount = 0; // сбросить количество после добавления
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        // Сохранение рецепта
+        _newRecipe.RecipeBaseProductAmount = _ingredients.Select(ingredient => new BaseProductForRecipeInputModel
+            {
+                Id = ingredient.Id,
+                Amount = ingredient.Count.ToString()
+            }).ToList();
+
+        await recipeManager.AddRecipeAsync(_newRecipe);
+
+        // Сброс данных формы после добавления
+        _newRecipe = new RecipeOutputModel();
+        // _ingredients.Clear();
+        selectedProduct = null;
+    }
 }

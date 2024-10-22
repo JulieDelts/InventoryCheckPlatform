@@ -1,4 +1,4 @@
-﻿
+
 using InventoryCheckPlatform.Core;
 using InventoryCheckPlatform.Core.DTOs;
 using InventoryCheckPlatform.Core.OutputModels;
@@ -9,6 +9,7 @@ namespace InventoryCheckPlatform.DAL
     public class UserRepository
     {
         private InventoryCheckContext _context;
+
 
         public UserRepository()
         {
@@ -45,7 +46,7 @@ namespace InventoryCheckPlatform.DAL
         }
 
         public async Task<List<User>> GetAllUsers()
-        {
+        {     
             var users = await _context.User.Include(u => u.Restaurant).ToListAsync();
 
             if (users != null)

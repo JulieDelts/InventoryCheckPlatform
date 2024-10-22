@@ -5,7 +5,7 @@
     <CardBody>
         <CardTitle>Рецепт № @Recipe.Id</CardTitle>
         <CardText>
-            Name: @Recipe.Title <br />
+            Название: @Recipe.Name <br />
         </CardText>
         <Button Color="ButtonColor.Primary" Type="ButtonType.Button" @onclick="ShowProductComponent">Посмотерть рецепт</Button>
     </CardBody>
@@ -26,7 +26,8 @@
     {
         var parameters = new Dictionary<string, object>
         {
-            { "Id", Recipe.Id }
+            { "Id", Recipe.Id },
+
         };
         await modal.ShowAsync<FullRecipeCard>(title: "Информация о рецепте", parameters: parameters);
     }

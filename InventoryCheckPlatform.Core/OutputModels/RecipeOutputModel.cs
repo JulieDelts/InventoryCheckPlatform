@@ -10,8 +10,9 @@ namespace InventoryCheckPlatform.Core.OutputModels
     public class RecipeOutputModel
     {
         public int Id { get; set; }
-        public string Title { get; set; }
-        public List<BaseProductForRecipeInputModel> Ingredients { get; set; } = new List<BaseProductForRecipeInputModel>();  
+        public string Name { get; set; }
+        public string FileName { get; set; }
+        public List<BaseProductForRecipeInputModel> RecipeBaseProductAmount { get; set; } = new List<BaseProductForRecipeInputModel>();  
 
     }
 }

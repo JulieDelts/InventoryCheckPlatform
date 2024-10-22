@@ -1,4 +1,5 @@
 using InventoryCheckPlatform.Components;
+using InventoryCheckPlatform.Core;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace InventoryCheckPlatform
@@ -43,6 +44,8 @@ namespace InventoryCheckPlatform
 				.AddInteractiveServerRenderMode();
 
 			app.Run();
-		}
+
+        
+        }
 	}
 }

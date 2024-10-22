@@ -6,7 +6,68 @@
 
 
 <div class="col-md-12 text-right">
-    <a href="/add-recipe">Добавить рецепт</a>
+    <a href="/recipe-form">Добавить рецепт</a>
+</div>
+
+@if (_recipe.Count > 0)
+{
+    <div style="display:flex; justify-content: flex-start; flex-wrap:wrap;">
+        @foreach (var p in _recipe)
+        {
+            <RecipeCard Recipe="@p" />
+        }
+    </div>
+}
+else
+{
+    <p>Рецептов нет</p>
+}
+
+<CardPagination ListCount="_totalRecipeCount"
+                PaginationStart="_paginationStart"
+                PaginationEnd="_paginationEnd"
+                NumberOfItemsPerPage="_numberOfItemsPerPage"
+                OnClickCallback="@SetPagination"></CardPagination>
+
+@code
+{
+    private List<ShortRecipeOutputModel> _recipe = new();
+    private int _totalRecipeCount;
+    private int _numberOfItemsPerPage = 6;
+    private int _paginationStart;
+    private int _paginationEnd;
+    private AdminRecipeManager _manager = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRecipes();
+    }
+
+    private async Task LoadRecipes()
+    {
+        var allRecipes = await _manager.GetAllRecipesShortAsync();
+        _totalRecipeCount = allRecipes.Count;
+        _recipe = allRecipes.Skip(_paginationStart).Take(_numberOfItemsPerPage).ToList();
+
+        if (_totalRecipeCount < _numberOfItemsPerPage)
+        {
+            _paginationEnd = _totalRecipeCount - 1;
+        }
+        else
+        {
+            _paginationEnd = _numberOfItemsPerPage - 1;
+        }
+    }
+
+    public void SetPagination(PaginationEventArgs e)
+    {
+        _paginationStart = e.PaginationStart;
+        _paginationEnd = e.PaginationEnd;
+        LoadRecipes();
+    }
+}
+
+@* <div class="col-md-12 text-right">
+    <a href="/recipe-form">Добавить рецепт</a>
 </div>
 
 
@@ -45,7 +106,7 @@ else
     public RecipePage()
     {
         _manager = new();
-        _recipe = _manager.GetAllRecipes();
+        _recipe = _manager.GetAllRecipesAsync();
         _numberOfItemsPerPage = 6;
 
         if (_recipe.Count < _numberOfItemsPerPage)
@@ -66,5 +127,5 @@ else
         _paginationStart = e.PaginationStart;
         _paginationEnd = e.PaginationEnd;
     }
-}
+} *@
 

@@ -1,0 +1,58 @@
+﻿@page "/waiter-check"
+@attribute [Authorize(Roles = "администратор ресторана, официант")]
+@rendermode RenderMode.InteractiveServer
+
+<h3>Управление чеками</h3>
+
+<EditForm Model="_newReceipt" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <button type="submit" class="btn btn-primary">Создать чек</button>
+</EditForm>
+
+@if (_receipts != null && _receipts.Any())
+{
+    <h4>Список чеков</h4>
+    <ul class="list-group">
+        @foreach (var receipt in _receipts)
+        {
+            <li class="list-group-item">
+                @receipt.Id,
+                @receipt.IssueTime,
+                @receipt.Waiter,
+                @receipt.TotalSum,
+
+                <button class="btn btn-danger btn-sm float-end" @onclick="() => DeleteReceipt(receipt.Id)">Удалить</button>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Чеки отсутствуют.</p>
+}
+
+@code {
+    private ReciptInputModel _newReceipt = new ReciptInputModel();
+    private List<ReciptOutputModel> _receipts = new List<ReciptOutputModel>();
+    private RecipteManager _recipteManager = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _receipts = await _recipteManager.GetAllReceiptsAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await _recipteManager.AddRecipte(_newReceipt);
+        _newReceipt = new ReciptInputModel();
+        _receipts = await _recipteManager.GetAllReceiptsAsync();
+    }
+
+    private async Task DeleteReceipt(int id)
+    {
+        await _recipteManager.DeleteOrder(id);
+        _receipts = await _recipteManager.GetAllReceiptsAsync();
+    }
+}

@@ -29,13 +29,13 @@
     private AdminRecipeManager recipeManager = new AdminRecipeManager();
 
     List<string> messages = new List<string>();
-    private BaseProductForRecipeOutputModel selectedProduct; // Переменная для хранения выбранного продукта
+    private BaseProductForRecipeOutputModel selectedProduct;
 
     protected override async Task OnInitializedAsync()
     {
         
 
-        products = await recipeManager.GetAllProductsAsync();
+        // products = await recipeManager.GetAllProductsAsync();
 
         base.OnInitialized();
     }
@@ -48,7 +48,7 @@
     private void SelectProduct(BaseProductForRecipeOutputModel product)
     {
         selectedProduct = product;
-    }// Сохранить выбранный продукт // Здесь вы можете выполнить дополнительные действия с выбранным продуктом }
+    }
 
 }
 

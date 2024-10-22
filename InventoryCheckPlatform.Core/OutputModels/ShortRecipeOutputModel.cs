@@ -9,6 +9,6 @@ namespace InventoryCheckPlatform.Core.OutputModels
     public class ShortRecipeOutputModel
     {
         public int Id { get; set; }
-        public string Title { get; set; }
+        public string Name { get; set; }
     }
 }

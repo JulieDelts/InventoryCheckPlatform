@@ -1,5 +1,7 @@
-﻿using InventoryCheckPlatform.Core.DTOs;
+using InventoryCheckPlatform.Core.DTOs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace InventoryCheckPlatform.Core
 {
@@ -33,6 +35,27 @@ namespace InventoryCheckPlatform.Core
         {
             string connectionString = Options.ConnectionString;
             optionsBuilder.UseNpgsql(connectionString);
+        }
+        private void Log(string logMessage)
+        {
+            // ���������� ���� � ����������� �� ���� ���������
+            var color = GetLogColor(logMessage);
+            Console.ForegroundColor = color;
+            Console.WriteLine(logMessage);
+            Console.ResetColor();
+        }
+
+        private ConsoleColor GetLogColor(string message)
+        {
+            // ������: �� ������ ���������� ������ ��� ������ ����� �� ������ ���������� ���������
+            if (message.Contains("Error"))
+                return ConsoleColor.Red;
+            else if (message.Contains("warn"))
+                return ConsoleColor.Yellow;
+            else if (message.Contains("info"))
+                return ConsoleColor.Green;
+            else
+                return ConsoleColor.White; // ��� ��������� ���������
         }
     }
 }
