@@ -1,6 +1,6 @@
 ﻿@page "/edit-recipe/{RecipeId:int}"
 @attribute [StreamRendering]
-@attribute [Authorize(Roles = "администратор")]
+@attribute [Authorize(Roles = "администратор ресторана")]
 @inject NavigationManager NavigationManager
 @rendermode RenderMode.InteractiveServer
 
