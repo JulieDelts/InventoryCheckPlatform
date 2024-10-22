@@ -4,7 +4,7 @@
 <div class="card">
 	@if (Restaurant.FileName != null && Restaurant.FileName != "")
 	{
-		<img src="@CreateFullPath(Restaurant.FileName)" alt="Фото ресторана" width="170" height="100">
+		<img src="@($"\\Images\\{Restaurant.FileName}")" alt="Фото ресторана" width="170" height="100">
 	}
 	else
 	{
@@ -72,11 +72,5 @@
 		await _manager.DeleteRestaurant(Restaurant.Id);
 
 		NavigationManager.NavigateTo($"/restaurants-menu-page", true);
-	}
-
-	private string CreateFullPath(string relativePath)
-	{
-		string path = Path.Combine("Images", relativePath);
-		return path;
 	}
 }

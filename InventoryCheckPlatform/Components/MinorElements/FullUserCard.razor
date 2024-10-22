@@ -4,7 +4,7 @@
 
 @if (_user.FileName != null && _user.FileName != "")
 {
-    <img src="@CreateFullPath(_user.FileName)" alt="Фото пользователя" width="170" height="100">
+    <img src="@($"\\Images\\{_user.FileName}")" alt="Фото пользователя" width="170" height="100">
 }
 else
 {
@@ -77,12 +77,6 @@ else
     {
         _user = await _manager.GetUserById(Id);
         await base.OnInitializedAsync();
-    }
-
-    private string CreateFullPath(string relativePath)
-    {
-        string path = Path.Combine("Images", relativePath);
-        return path;
     }
 
     private void EditUser()
