@@ -40,7 +40,7 @@
         NumberOfItemsPerPage = 6;
     }
 
-    protected override void OnInitialized()
+    protected override void OnParametersSet()
     {
         _numberOfPages = CalculateNumberOfPages();
         _numberOfPagesToDisplay = CalculateNumberOfPagesToDisplay();
@@ -81,7 +81,7 @@
     private async Task OnPageChangedAsync(int newPageNumber)
     {
         PaginationStart = (newPageNumber - 1) * NumberOfItemsPerPage;
-        PaginationEnd = Math.Min(PaginationStart + NumberOfItemsPerPage, ListCount);
+        PaginationEnd = Math.Min(PaginationStart + NumberOfItemsPerPage - 1, ListCount - 1);
 
         await Task.Run(() => { _currentPageNumber = newPageNumber; });
     }

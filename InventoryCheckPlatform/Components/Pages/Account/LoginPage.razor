@@ -1,4 +1,4 @@
-﻿@page "/login"
+@page "/login"
 
 @inject NavigationManager navManager
 
@@ -37,15 +37,24 @@
 	public HttpContext HttpContext { get; set; }
 
 	[SupplyParameterFromForm]
-	public UserInputModel Model { get; set; } = new();
+	public LoginInputModel Model { get; set; }
+
+	private SysAdminUserManager _manager;
+
+	public LoginPage()
+	{
+		_manager = new();
+
+		Model = new();
+	}
 
 	private string? _errorMessage;
 
 	private async Task Authenticate()
 	{
-		var user = users.Where(user => user.Login == Model.Login && user.Password == Model.Password).FirstOrDefault();
+		var user = await _manager.CheckUserCredentials(Model);
 
-		if (user is null)
+		if (user == null)
 		{
 			_errorMessage = "Неверные имя пользователя или пароль.";
 			return;
@@ -54,10 +63,15 @@
 		var claims = new List<Claim>()
 		{
 			new Claim(ClaimTypes.Name, Model.Login),
-			new Claim(ClaimTypes.Role, "администратор ресторана"),
-			new Claim("RestaurantId","1"),
-			new Claim("SystemId", "2")
+			new Claim(ClaimTypes.Role, user.Role),
+			new Claim("SystemId", user.Id.ToString())
 		};
+
+		if (user.Role == "официант" || user.Role == "администратор ресторана")
+		{
+			var claim = new Claim("RestaurantId", user.RestaurantId.ToString());
+			claims.Add(claim);
+		}
 
 		var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 		var principal = new ClaimsPrincipal(identity);
@@ -65,25 +79,4 @@
 
 		navManager.NavigateTo("./");
 	}
-
-	List<UserInputModel> users = new()
-	{
-		new()
-		{
-			Login = "Ju",
-			Password = "qwe",
-		},
-		new()
-		{
-			Login = "Po",
-			Password = "asd"
-		},
-		new ()
-		{
-			Login = "Pet",
-			Password = "111"
-			
-		}
-
-	};
 }

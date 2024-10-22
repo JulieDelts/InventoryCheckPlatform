@@ -1,5 +1,6 @@
 ﻿@rendermode RenderMode.InteractiveServer
 @inject IConfiguration config
+@inject NavigationManager NavigationManager
 
 <EditForm Model="@ExtendedRestaurant" OnValidSubmit="@Submit">
     <DataAnnotationsValidator />
@@ -41,6 +42,8 @@
         ExtendedRestaurant.FileName = relativePath;
 
         await _restaurantManager.UpdateRestaurant(ExtendedRestaurant);
+
+        NavigationManager.NavigateTo($"/restaurants-menu-page", true);
     }
 
     private void LoadFile(InputFileChangeEventArgs e)
@@ -61,7 +64,7 @@
 
         string path = Path.Combine(config.GetValue<string>("FileStorage"), "RestaurantImages", newFileName);
 
-        string relativePath = Path.Combine("BaseProductImages", newFileName);
+        string relativePath = Path.Combine("RestaurantImages", newFileName);
 
         await using FileStream fs = new(path, FileMode.Create);
         await file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 30).CopyToAsync(fs);

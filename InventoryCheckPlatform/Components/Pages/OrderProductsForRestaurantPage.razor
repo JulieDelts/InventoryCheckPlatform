@@ -1,4 +1,4 @@
-﻿@page "/order-products-for-restaurant/{restaurantId:int}"
+﻿@page "/order-products-for-restaurant/{restaurantId:int}/{shippingDocumentId:int}"
 @attribute [StreamRendering]
 @attribute [Authorize(Roles = "логист")]
 @rendermode RenderMode.InteractiveServer
@@ -6,7 +6,7 @@
 
 <h5>Заказ продуктов для ресторанa Id: @restaurantId</h5>
 
-<p>Был создан отгрузочный лист Id: @_shippingDocumentId</p>
+<p>Был создан отгрузочный лист Id: @shippingDocumentId</p>
 <p>Выберите продукты для ресторана:</p>
 
 
@@ -51,10 +51,8 @@
     [Parameter]
     public int restaurantId { get; set; }
 
-    [CascadingParameter]
-    public Task<AuthenticationState> State { get; set; }
-
-    private int _shippingDocumentId;
+    [Parameter]
+    public int shippingDocumentId { get; set; }
 
     private LogisticianShippingDocumentManager _shippingDocumentManager;
 
@@ -91,19 +89,6 @@
 
         _specificProducts = await _logisticianProductManager.GetAllSpecificProducts();
 
-        var authState = await State;
-        var user = authState.User;
-
-        var id = user.FindFirst("SystemId")?.Value;
-
-        var logisticianId = Convert.ToInt32(id);
-
-        var issueDate = DateOnly.FromDateTime(DateTime.Now);
-
-        ShippingDocumentInputModel _shippingDocument = new() { LogisticianId = logisticianId, RestaurantId = restaurantId, Status = "создан", IssueDate = issueDate };
-
-        _shippingDocumentId = await _shippingDocumentManager.AddShippingDocument(_shippingDocument);
-
         await base.OnInitializedAsync();
     }
 
@@ -114,26 +99,32 @@
             await _shippingDocumentManager.AddShippingDocumentSpecificProductAmount(productAmount);
         }
 
-        ExtendedShippingDocumentInputModel shippingDocument = new() { Id = _shippingDocumentId, Status = "подтвержден" };
+        ExtendedShippingDocumentInputModel shippingDocument = new() { Id = shippingDocumentId, Status = "подтвержден" };
 
         await _shippingDocumentManager.UpdateShippingDocument(shippingDocument);
 
-        NavigationManager.NavigateTo("/shipping-documents-list-page");
+        NavigationManager.NavigateTo("/shipping-documents-list-page", true);
     }
 
     private void HandleOnValidSubmit()
     {
         var productAmount = new ShippingDocumentSpecificProductAmountInputModel() 
-            { ProductAmount = _shippingDocumentSpecificProductAmount.ProductAmount, ShippingDocumentId = _shippingDocumentId, SpecificProductId = _specificProduct.Id };
+            { ProductAmount = _shippingDocumentSpecificProductAmount.ProductAmount, ShippingDocumentId = shippingDocumentId, SpecificProductId = _specificProduct.Id };
 
-        _shippingDocumentSpecificProductAmounts.Add(productAmount);
+        var productAlreadyInList = _shippingDocumentSpecificProductAmounts.Where(pa => pa.ShippingDocumentId == shippingDocumentId && pa.SpecificProductId == _specificProduct.Id).FirstOrDefault();
+
+        if (productAlreadyInList == null)
+        {
+            _shippingDocumentSpecificProductAmounts.Add(productAmount);
+        }
 
         _shippingDocumentSpecificProductAmount = new();
+        _editContext = new(_shippingDocumentSpecificProductAmount);
     }
 
     private void OnAutoCompleteChanged(SpecificProductOutputModel selectedProduct)
     {
-        var product = _specificProducts.Where(s => s.Name == selectedProduct.Name).FirstOrDefault();
+        var product = _specificProducts.Where(s => s.Name == selectedProduct?.Name).FirstOrDefault();
 
         if (product != null)
         {

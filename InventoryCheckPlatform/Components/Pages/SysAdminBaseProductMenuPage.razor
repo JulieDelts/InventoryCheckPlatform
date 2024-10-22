@@ -1,4 +1,4 @@
-﻿@page "/product-menu-page"
+﻿@page "/base-product-menu-page"
 @attribute [StreamRendering]
 @attribute [Authorize(Roles = " системный администратор")]
 @using static InventoryCheckPlatform.Components.MinorElements.CardPagination
@@ -47,7 +47,10 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
         _products = await _manager.GetAllBaseProducts();
+
 
         if (_products.Count < _numberOfItemsPerPage)
         {
@@ -56,12 +59,11 @@ else
         }
         else
         {
-
             _paginationStart = 0;
-            _paginationEnd = _numberOfItemsPerPage;
+            _paginationEnd = _numberOfItemsPerPage-1;
         }
 
-        await base.OnInitializedAsync();
+        StateHasChanged();
     }
 
     private void SetPagination(PaginationEventArgs e)

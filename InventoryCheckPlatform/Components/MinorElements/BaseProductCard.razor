@@ -1,9 +1,10 @@
 ﻿@rendermode RenderMode.InteractiveServer
+@inject NavigationManager NavigationManager
 
 <div class="card">
 	@if (Product.FileName != null && Product.FileName != "")
 	{
-		<img src="@CreateFullPath(Product.FileName)" alt="Фото продукта" width="170" height="100">
+		<img src="@($"\\Images\\{Product.FileName}")" alt="Фото продукта" width="170" height="100">
 	}
 	else
 	{
@@ -20,11 +21,11 @@
 			</button>
 			<ul class="dropdown-menu">
 				<li><button class="dropdown-item" type="button" @onclick="ShowForm">Редактировать</button></li>
-				<li><button class="dropdown-item" type="button">Удалить</button></li>
+				<li><button class="dropdown-item" type="button" @onclick="Delete">Удалить</button></li>
 			</ul>
 		</div>
 
-	    <Modal @ref="modal" UseStaticBackdrop="false" CloseOnEscape="true"/>
+	    <Modal @ref="_modal" UseStaticBackdrop="false" CloseOnEscape="true"/>
 
 	</div>
 </div>
@@ -35,19 +36,29 @@
 	[EditorRequired]
 	public BaseProductOutputModel Product { get; set; }
 
-	private Modal modal = new();
+	private SysAdminBaseProductManager _productManager;
+
+	private Modal _modal;
+
+	public BaseProductCard()
+	{
+		_productManager = new();
+
+		_modal = new();
+	}
 
 	private async Task ShowForm()
 	{
 		ExtendedBaseProductInputModel productInputModel = new() { Id = Product.Id, Category = Product.Category, Name = Product.Name };
 		var parameters = new Dictionary<string, object>();
 		parameters.Add("ExtendedBaseProduct", productInputModel);
-		await modal.ShowAsync<BaseProductModificationForm>(title: "Редактирование продукта", parameters: parameters);
+		await _modal.ShowAsync<BaseProductModificationForm>(title: "Редактирование продукта", parameters: parameters);
 	}
 
-	private string CreateFullPath(string relativePath)
+	private async Task Delete()
 	{
-		string path = Path.Combine("Images", relativePath);
-		return path;
+		await _productManager.DeleteBaseProduct(Product.Id);
+
+		NavigationManager.NavigateTo($"/base-product-menu-page", true);
 	}
 }

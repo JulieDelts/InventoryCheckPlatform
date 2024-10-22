@@ -33,18 +33,12 @@ namespace InventoryCheckPlatform.Core
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = Environment.GetEnvironmentVariable("InventoryCheckDb");
-
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new InvalidOperationException("Строка подключения не найдена в переменных окружения.");
-            }
-
-            optionsBuilder.UseNpgsql(connectionString).EnableSensitiveDataLogging().LogTo(Log, LogLevel.Information);
+            string connectionString = Options.ConnectionString;
+            optionsBuilder.UseNpgsql(connectionString);
         }
         private void Log(string logMessage)
         {
-            // Определяем цвет в зависимости от типа сообщения
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             var color = GetLogColor(logMessage);
             Console.ForegroundColor = color;
             Console.WriteLine(logMessage);
@@ -53,7 +47,7 @@ namespace InventoryCheckPlatform.Core
 
         private ConsoleColor GetLogColor(string message)
         {
-            // Пример: вы можете определить логику для выбора цвета на основе содержания сообщения
+            // пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             if (message.Contains("Error"))
                 return ConsoleColor.Red;
             else if (message.Contains("warn"))
@@ -61,7 +55,7 @@ namespace InventoryCheckPlatform.Core
             else if (message.Contains("info"))
                 return ConsoleColor.Green;
             else
-                return ConsoleColor.White; // Для остальных сообщений
+                return ConsoleColor.White; // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿@rendermode RenderMode.InteractiveServer
+@inject NavigationManager NavigationManager
 
 <div class="card">
 	@if (Restaurant.FileName != null && Restaurant.FileName != "")
 	{
-		<img src="@CreateFullPath(Restaurant.FileName)" alt="Фото ресторана" width="170" height="100">
+		<img src="@($"\\Images\\{Restaurant.FileName}")" alt="Фото ресторана" width="170" height="100">
 	}
 	else
 	{
@@ -36,7 +37,7 @@
 			</ul>
 		</div>
 
-		<Modal @ref="modal" UseStaticBackdrop="false" CloseOnEscape="true" />
+		<Modal @ref="_modal" UseStaticBackdrop="false" CloseOnEscape="true" />
 
 	</div>
 </div>
@@ -47,19 +48,29 @@
 	[EditorRequired]
 	public RestaurantOutputModel Restaurant { get; set; }
 
-	private Modal modal = new();
+	private SysAdminRestaurantManager _manager;
+
+	private Modal _modal;
+
+	public RestaurantCard()
+	{
+		_modal = new();
+
+		_manager = new();
+	}
 
 	private async Task ShowForm()
 	{
 		ExtendedRestaurantInputModel restaurantInputModel = new() { Id = Restaurant.Id, Address = Restaurant.Address, FileName = Restaurant.FileName };
 		var parameters = new Dictionary<string, object>();
 		parameters.Add("ExtendedRestaurant", restaurantInputModel);
-		await modal.ShowAsync<RestaurantModificationForm>(title: "Редактирование ресторана", parameters: parameters);
+		await _modal.ShowAsync<RestaurantModificationForm>(title: "Редактирование ресторана", parameters: parameters);
 	}
 
-	private string CreateFullPath(string relativePath)
+	private async Task Delete()
 	{
-		string path = Path.Combine("Images", relativePath);
-		return path;
+		await _manager.DeleteRestaurant(Restaurant.Id);
+
+		NavigationManager.NavigateTo($"/restaurants-menu-page", true);
 	}
 }
