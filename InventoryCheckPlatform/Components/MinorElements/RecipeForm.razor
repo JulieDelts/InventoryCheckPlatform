@@ -2,7 +2,7 @@
 @page "/recipe-form"
 @rendermode RenderMode.InteractiveServer
 @inject IConfiguration config
-@inject AdminRecipeManager _productService
+@inject NavigationManager NavigationManager
 
 <EditForm Model="@recipeInput" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
@@ -18,31 +18,13 @@
         <InputText @bind-Value="recipeInput.FileName" class="form-control" placeholder="Выберите файл" />
     </div>
 
- 
-    <div class="mb-3 text-center">
-        <label class="form-label">Продукт:</label>
-        <Dropdown Color="DropdownColor.Secondary">
-            <DropdownToggleButton tabindex="@tabindex">
-                @(SelectedProduct?.Name ?? "Выберите продукт")
-            </DropdownToggleButton>
-            <DropdownMenu>
-                @foreach (var product in products)
-                {
-                    <DropdownItem Type="DropdownItemType.Link" @onclick="() => SelectProduct(product)">
-                        @product.Name
-                    </DropdownItem>
-                }
-            </DropdownMenu>
-        </Dropdown>
-    </div>
-
     <!-- Список ингредиентов -->
     <div class="mb-3 text-center">
         <label class="form-label">Ингредиенты:</label>
         <ul>
             @foreach (var ingredient in recipeInput.Ingredients)
             {
-                <li>@ingredient.Name</li>
+                <li>@ingredient.Name - @ingredient.Amount</li>
             }
         </ul>
         <Dropdown Color="DropdownColor.Secondary">
@@ -59,17 +41,28 @@
             </DropdownMenu>
         </Dropdown>
     </div>
+    <h3 class="mb-3 text-center">Введите количество</h3>
+
+    <div class="mb-3 text-center">
+        <InputNumber @bind-Value="InputCount" />
+    </div>
 
     <div class="mb-3 text-center">
         <button type="submit" class="btn btn-primary">Отправить</button>
     </div>
+     <div class="col-md-12 text-end">
+        <Button Color="ButtonColor.Primary" @onclick="LoadRecipe">Изменить</Button>
+     </div>
 </EditForm>
 
 @code {
     private RecipeInputModel recipeInput = new();
     private List<BaseProductForRecipeOutputModel> products = new();
     private BaseProductForRecipeInputModel? SelectedProduct;
+    private AdminRecipeManager _productService = new();
     private int tabindex = 0;
+    private int InputCount = 0;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -84,15 +77,17 @@
 
     private void AddIngredient(BaseProductForRecipeOutputModel product)
     {
-       
+
         var ingredient = new BaseProductForRecipeInputModel
             {
                 Id = product.Id,
-                Name = product.Name
+                Name = product.Name,
+                Amount = InputCount.ToString()
             };
 
-     
+
         recipeInput.Ingredients.Add(ingredient);
+        InputCount = 0;
     }
 
     private void HandleValidSubmit()
@@ -104,5 +99,12 @@
     {
         var selectedProduct = products.FirstOrDefault(p => p.Id == recipeInput.SelectedProductId);
         return selectedProduct?.Name ?? "Выберите продукт";
+    }
+    private void LoadRecipe()
+    {
+        _productService.AddRecipeAsync(new RecipeOutputModel { Name = recipeInput.Title, 
+            RecipeBaseProductAmount = recipeInput.Ingredients});
+        NavigationManager.NavigateTo($"/recipes-list-page");
+
     }
 }

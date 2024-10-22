@@ -7,10 +7,10 @@
 </div>
 <div class="row">
     <div class="col-5 col-md-3 text-end">Название:</div>
-    <div class="col-7 col-md-9">@_recipe.Title</div>
+    <div class="col-7 col-md-9">@_recipe.Name</div>
 </div>
 <div class="row">
-    <div class="card-title">Ингредиенты: @string.Join(",", _recipe.Ingredients.Select(e => e.Name).ToList())</div>
+    <div class="card-title">Ингредиенты: @string.Join(",", _recipe.RecipeBaseProductAmount.Select(e => e.Name).ToList())</div>
 </div>
 
 

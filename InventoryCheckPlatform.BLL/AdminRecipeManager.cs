@@ -1,98 +1,99 @@
-﻿using InventoryCheckPlatform.Core.InputModels;
+﻿using AutoMapper;
+using InventoryCheckPlatform.BLL.Mappings;
+using InventoryCheckPlatform.Core.DTOs;
+using InventoryCheckPlatform.Core.InputModels;
 using InventoryCheckPlatform.Core.OutputModels;
+using InventoryCheckPlatform.DAL; 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace InventoryCheckPlatform.BLL
 {
     public class AdminRecipeManager
     {
-        private List<ShortRecipeOutputModel> _recipes;
-        private List<BaseProductOutputModel> _products;
+        private readonly RecipeRepository _recipeRepository;
+        private readonly BaseProductRepository _productRepository;
+        private Mapper _mapper;
+
         public AdminRecipeManager()
         {
+            _recipeRepository = new();
 
-            _recipes = new List<ShortRecipeOutputModel>
-            {
+            _productRepository = new();
 
-                new ShortRecipeOutputModel
-                {
-                    Id=1,
-                    Title= "Спагетти карбонара",
-
-                },
-                new ShortRecipeOutputModel
-                {
-                    Id=2,
-                    Title= "Цезарь",
-
-                },
-
-            };
+            var config = new MapperConfiguration(
+               cfg =>
+               {
+                   cfg.AddProfile(new RecipeMappinProfile());
+                   cfg.AddProfile(new BaseProductMapperProfile());
+               });
+            _mapper = new Mapper(config);
         }
+
+
+
         public async Task<RecipeOutputModel> GetRecipeByIdAsync(int id)
         {
-            return new RecipeOutputModel()
+            var recipe = await _recipeRepository.GetRecipeById(id);
+            if (recipe == null) return null; //выбросить исключение
+            var result = _mapper.Map<RecipeOutputModel>(recipe);
+            result.RecipeBaseProductAmount = new();
+            foreach (var item in recipe.RecipeBaseProductAmounts)
             {
-                Id = 2,
-                Title = "Цезарь",
-                Ingredients = new List<BaseProductForRecipeInputModel>
+                result.RecipeBaseProductAmount.Add(new BaseProductForRecipeInputModel { Id = item.Id, Name = item.BaseProduct.Name, Amount = item.ProductAmount.ToString() });
+            }
+            return result;
+        }
+
+        public async Task<List<BaseProductForRecipeOutputModel>> GetAllProductsAsync ()
+        {
+            var recipes = await _productRepository.GetAllBaseProducts();
+            return _mapper.Map<List<BaseProductForRecipeOutputModel>>(recipes);
+        }
+
+        public async Task<List<ShortRecipeOutputModel>> GetAllRecipesShortAsync()
+        {
+            var recipes = await _recipeRepository.GetAllRecipes();
+            return _mapper.Map<List<ShortRecipeOutputModel>>(recipes);
+        }
+
+        public async Task AddRecipeAsync(RecipeOutputModel newRecipe)
+        {
+            if (newRecipe == null) throw new ArgumentNullException(nameof(newRecipe));
+
+            var recipeEntity = new Recipe {Name=newRecipe.Name, ReceiptRecipeAmounts=new(),RecipeBaseProductAmounts=new(), Restaurant=new Restaurant {Id=2,Address="111"} }; 
+
+            foreach (var ingredient in newRecipe.RecipeBaseProductAmount)
+            {
+                var baseProduct = await _productRepository.GetBaseProductById(ingredient.Id); 
+                if (baseProduct != null)
+                {
+                    recipeEntity.RecipeBaseProductAmounts.Add(new RecipeBaseProductAmount
                     {
-                        new BaseProductForRecipeInputModel  { Id = 5, Name = "Курица", Count="2"},
-                    new BaseProductForRecipeInputModel { Id = 6, Name = "Салат ", Count="2"},
-                    new BaseProductForRecipeInputModel { Id = 7, Name = "Гренки", Count="2"},
-                    new BaseProductForRecipeInputModel { Id = 8, Name = "Соус Цезарь", Count="2"}
-
-                    }
-
-            };
-        }
-        public List<ShortRecipeOutputModel> GetAllRecipes()
-        {
-            return new List<ShortRecipeOutputModel>
-            {
-                new ShortRecipeOutputModel
+                        BaseProduct = baseProduct,
+                        ProductAmount = int.Parse(ingredient.Amount) 
+                    });
+                }
+                else
                 {
-                    Id = 1,
-                    Title = "Спагетти карбонара",
+                    throw new InvalidOperationException($"Base product with ID {ingredient.Id} not found.");
+                }
+            }
 
-                },
-                new ShortRecipeOutputModel
-                {
-                    Id = 2,
-                    Title = "Цезарь",
-
-                },
-            };
+            await _recipeRepository.AddRecipe(recipeEntity);
         }
-        public void AddRecipe(RecipeOutputModel newRecipe)
-        {
-
-        }
-
-        public void DeleteRecipe(int id)
-        {
-
-        }
-        public async Task<List<BaseProductForRecipeOutputModel>> GetAllProductsAsync()
-        {
-            return new List<BaseProductForRecipeOutputModel>()
-            {
-                        new BaseProductForRecipeOutputModel  { Id = 5, Name = "Курица"},
-                    new BaseProductForRecipeOutputModel { Id = 6, Name = "Салат "},
-                    new BaseProductForRecipeOutputModel { Id = 7, Name = "Гренки"},
-                    new BaseProductForRecipeOutputModel { Id = 8, Name = "Соус Цезарь"}
-
-                    
-
-            };
-        }
-
+        //public async Task<List<BaseProductForRecipeOutputModel>> GetAllProductsAsync()
+        //{
+        //    var baseproduct= _productRepository.GetAllBaseProducts();
+        //    return baseproduct.Result.Select(x => new BaseProductForRecipeOutputModel { Id = x.Id, Name = x.Name, Count =0}).ToList();
+        //}
     }
+
+
 }
+    
+
 
     
 

@@ -11,10 +11,10 @@
 
     <div class="form-group">
         <label for="name">Название:</label>
-        <InputText id="name" class="form-control" @bind-Value="recipe.Title" />
-        <ValidationMessage For="@(() => recipe.Title)" />
+        <InputText id="name" class="form-control" @bind-Value="recipe.Name" />
+        <ValidationMessage For="@(() => recipe.Name)" />
     </div>
-    @foreach (var emp in recipe.Ingredients)
+    @foreach (var emp in recipe.RecipeBaseProductAmount)
     {
         <div>
 
@@ -31,7 +31,7 @@
                     }
                 </ul>
             </div>
-            <InputText @bind-Value=emp.Count />
+            <InputText @bind-Value=emp.Amount />
 
         </div>
         
@@ -60,7 +60,7 @@
     protected override async Task OnInitializedAsync()
     {
         recipe = await recipeManager.GetRecipeByIdAsync(RecipeId);
-        products = await recipeManager.GetAllProductsAsync();
+        // products = await recipeManager.GetAllRecipesAsync();
     }
 
 

@@ -1,5 +1,7 @@
 using InventoryCheckPlatform.Core.DTOs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace InventoryCheckPlatform.Core
 {
@@ -29,13 +31,37 @@ namespace InventoryCheckPlatform.Core
 
         public DbSet<ShippingDocumentSpecificProductAmount> ShippingDocumentSpecificProductAmount { get; set; }
 
-        public DbSet<Order> Orders { get; set; }
-      
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = "Host=localhost;Port=5432;Database=invcheckdb;Username=postgres;Password=1234;";
-            optionsBuilder.UseNpgsql(connectionString);
+            string connectionString = Environment.GetEnvironmentVariable("InventoryCheckDb");
+
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new InvalidOperationException("Строка подключения не найдена в переменных окружения.");
+            }
+
+            optionsBuilder.UseNpgsql(connectionString).EnableSensitiveDataLogging().LogTo(Log, LogLevel.Information);
+        }
+        private void Log(string logMessage)
+        {
+            // Определяем цвет в зависимости от типа сообщения
+            var color = GetLogColor(logMessage);
+            Console.ForegroundColor = color;
+            Console.WriteLine(logMessage);
+            Console.ResetColor();
+        }
+
+        private ConsoleColor GetLogColor(string message)
+        {
+            // Пример: вы можете определить логику для выбора цвета на основе содержания сообщения
+            if (message.Contains("Error"))
+                return ConsoleColor.Red;
+            else if (message.Contains("warn"))
+                return ConsoleColor.Yellow;
+            else if (message.Contains("info"))
+                return ConsoleColor.Green;
+            else
+                return ConsoleColor.White; // Для остальных сообщений
         }
     }
 }
