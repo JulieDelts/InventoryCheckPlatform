@@ -3,7 +3,7 @@
 <div class="card">
     @if (User.FileName != null && User.FileName != "")
     {
-        <img src="@CreateFullPath(User.FileName)" alt="Фото пользователя" width="170" height="100">
+        <img src="@($"\\Images\\{User.FileName}")" alt="Фото пользователя" width="170" height="100">
     }
     else
     {
@@ -40,11 +40,5 @@
             { "Id", User.Id }
         };
         await modal.ShowAsync<FullUserCard>(title: "Информация о пользователе", parameters: parameters);
-    }
-
-    private string CreateFullPath(string relativePath)
-    {
-        string path = Path.Combine("Images", relativePath);
-        return path;
     }
 }

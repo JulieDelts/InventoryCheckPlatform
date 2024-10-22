@@ -4,7 +4,7 @@
 <div class="card">
 	@if (Product.FileName != null && Product.FileName != "")
 	{
-		<img src="@CreateFullPath(Product.FileName)" alt="Фото продукта" width="170" height="100">
+		<img src="@($"\\Images\\{Product.FileName}")" alt="Фото продукта" width="170" height="100">
 	}
 	else
 	{
@@ -60,11 +60,5 @@
 		await _productManager.DeleteBaseProduct(Product.Id);
 
 		NavigationManager.NavigateTo($"/base-product-menu-page", true);
-	}
-
-	private string CreateFullPath(string relativePath)
-	{
-		string path = Path.Combine("Images", relativePath);
-		return path;
 	}
 }
